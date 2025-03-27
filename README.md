@@ -48,3 +48,37 @@ Join our community of developers creating universal apps.
 
 - [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
 - [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+
+##Para ejecutar con Docker en Windows
+
+En Windows se debe cambiar la configuración de Docker Desktop en Windows:
+- Abre Docker Desktop.
+- Ve a Settings > General y activa:
+- Darle check a "Expose daemon on tcp://localhost:2375 without TLS"
+- Aplica los cambios y reinicia Docker.
+
+Luego ejecutar: 
+docker-compose build
+docker-compose up
+
+En otra terminal ejecutar:
+docker exec -it rootnetfrontend-react-native-app-1 sh
+npx expo start --tunnel
+
+Al aparecer: Use port 8082 instead? › (Y/n)
+Ingresar Y
+
+Pedira instalar  @expo/ngrok@^4.1.0
+Ingresar Y
+
+Luego de instalar, se sale de la consola con Ctrl + C
+exit
+
+
+En la terminal donde esta corriendo el contenedor se necesita detener el contendor con:
+Ctrl + C
+
+Este proceso se hace la primera vez de ejecutar el docker-compose
+
+Las veces siguientes solo con ejecutar:
+docker-compose up
