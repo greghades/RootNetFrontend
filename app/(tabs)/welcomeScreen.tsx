@@ -68,7 +68,6 @@ const styles = StyleSheet.create({
         justifyContent: "space-between",
         alignItems: "center",
         width: "100%",
-        paddingHorizontal: 20,
         marginTop: 20,
     },
     
@@ -83,7 +82,6 @@ const styles = StyleSheet.create({
         fontFamily: "Roboto",
         color: "#fff",
         fontSize: 16,
-        fontWeight: "bold",
     },
     registerButton: {
         backgroundColor: "#fff",
@@ -96,7 +94,6 @@ const styles = StyleSheet.create({
         fontFamily: "Roboto",
         color: "#1F1F39",
         fontSize: 16,
-        fontWeight: "bold",
     },
 });
 
