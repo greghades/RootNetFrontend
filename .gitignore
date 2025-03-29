@@ -36,3 +36,6 @@ yarn-error.*
 *.tsbuildinfo
 
 app-example
+
+#Ignore la carpeta que se produce al compilar
+%USERPROFILE%
