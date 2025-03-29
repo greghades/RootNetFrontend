@@ -34,7 +34,7 @@ const LoginScreen = () => {
     <View style={styles.container}>
       <Text style={styles.title}>Acceso</Text>
 
-      <Text style={styles.label}>Tu Correo</Text>
+      <Text style={styles.label}>Correo</Text>
       <TextInput
         style={styles.input}
         placeholder="Ingresa tu correo"
@@ -86,7 +86,7 @@ const styles = StyleSheet.create({
   },
   label: {
     fontFamily: "Roboto",
-    color: "#aaa",
+    color: "#fff",
     marginBottom: 5,
   },
   input: {
