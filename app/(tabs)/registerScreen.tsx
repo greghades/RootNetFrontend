@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
-
+import { useNavigation } from "@react-navigation/native";
 interface Errors {
     nombre?: string;
     apellido?: string;
@@ -31,7 +31,6 @@ interface Errors {
 
     const validate = (): boolean => {
         let newErrors: Errors = {};
-
         // Validate name
         if (!form.nombre) {
         newErrors.nombre = "El nombre es requerido.";
@@ -88,7 +87,7 @@ interface Errors {
         console.log("Registro exitoso", form);
         }
     };
-
+    const navigation = useNavigation();
     return (
         <ScrollView>
         <View style={styles.container}>
@@ -205,7 +204,7 @@ interface Errors {
             </TouchableOpacity>
 
             {/* login */}
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.navigate("Login")}>
             <Text style={styles.forgotText}>¡Ya tengo una cuenta!</Text>
         </TouchableOpacity>
         </View>

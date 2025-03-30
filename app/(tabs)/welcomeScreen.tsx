@@ -3,7 +3,7 @@ import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
 const WelcomeScreen = () => {
-
+    const navigation = useNavigation();
     return (
         <View style={styles.container}>
             <Image source={require("../../assets/images/logo.jpg")} style={styles.logo} />
@@ -13,11 +13,11 @@ const WelcomeScreen = () => {
             </Text>
 
             <View style={styles.buttonContainer}>
-                <TouchableOpacity style={styles.accessButton}>
+                <TouchableOpacity style={styles.accessButton} onPress={() => navigation.navigate("Login")}>
                     <Text style={styles.accessText}>Acceder</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity style={styles.registerButton}>
+                <TouchableOpacity style={styles.registerButton} onPress={() => navigation.navigate("Register")}>
                     <Text style={styles.registerText}>Registrarse</Text>
                 </TouchableOpacity>
             </View>
