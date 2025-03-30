@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { View, ActivityIndicator } from "react-native";
 import * as Font from "expo-font";
-import AppNavigator from "../../src/navigation/AppNavigator";
-
+import { NavigationContainer } from "@react-navigation/native";
+import AppNavigator from "./src/navigation/AppNavigator";
 
 const App = () => {
   const [fontLoaded, setFontLoaded] = useState(false);
@@ -10,7 +10,7 @@ const App = () => {
   // Carry - font
   const loadFonts = async () => {
     await Font.loadAsync({
-      "Roboto": require("../../src/assets/fonts/Roboto-VariableFont_wdth,wght.ttf"),
+      "Roboto": require("../../assets/fonts/Roboto-VariableFont_wdth,wght.ttf"),
     });
     setFontLoaded(true);
   };
@@ -36,7 +36,9 @@ const App = () => {
   }
 
   return (
-    <AppNavigator />
+    <NavigationContainer>
+      <AppNavigator />
+    </NavigationContainer>
   );
 };
 
