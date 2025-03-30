@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, Alert } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
+import { styles } from '../styles/loginStyles';
 
 const LoginScreen = () => {
   const [email, setEmail] = useState("");
@@ -71,62 +72,5 @@ const LoginScreen = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#1F1F39",
-    padding: 20,
-    justifyContent: "center",
-  },
-  title: {
-    fontFamily: "Roboto",
-    fontSize: 28,
-    color: "#fff",
-    marginBottom: 20,
-  },
-  label: {
-    fontFamily: "Roboto",
-    color: "#fff",
-    marginBottom: 5,
-  },
-  input: {
-    fontFamily: "Roboto",
-    backgroundColor: 'rgb(62, 62, 85)',
-    color: "#fff",
-    padding: 10,
-    borderRadius: 5,
-    marginBottom: 15,
-  },
-  passwordContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: 'rgb(62, 62, 85)',
-    padding: 10,
-    borderRadius: 5,
-    marginBottom: 15,
-  },
-  inputPassword: {
-    fontFamily: "Roboto",
-    flex: 1,
-    color: "#fff",
-  },
-  forgotText: {
-    fontFamily: "Roboto",
-    color: "#bbb",
-    textAlign: "right",
-    marginBottom: 20,
-  },
-  loginButton: {
-    backgroundColor: "#3D5CFF",
-    padding: 15,
-    borderRadius: 5,
-    alignItems: "center",
-    marginBottom: 20,
-  },
-  loginText: {
-    fontFamily: "Roboto",
-    color: "#fff",
-  },
-});
 
 export default LoginScreen;
