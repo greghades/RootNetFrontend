@@ -10,7 +10,7 @@ const App = () => {
   // Carry - font
   const loadFonts = async () => {
     await Font.loadAsync({
-      "Roboto": require("../../src/assets/fonts/Roboto-Italic-VariableFont_wdth,wght.ttf"),
+      "Roboto": require("../../src/assets/fonts/Roboto-VariableFont_wdth,wght.ttf"),
     });
     setFontLoaded(true);
   };

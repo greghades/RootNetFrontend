@@ -1,14 +1,12 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { View, Text, ScrollView } from 'react-native';
 import { styles } from '../styles/registerStyles';
-import { COLORS } from '../styles/colors';
 import InputField from '../components/InputField';
 import PasswordInput from '../components/PasswordInput';
 import Button from '../components/Button';
 import ButtonContainer from '../components/ButtonContainer';
 
-// Interfaz para los errores
 interface Errors {
   nombre?: string;
   apellido?: string;
@@ -19,7 +17,6 @@ interface Errors {
   confirmarContrasena?: string;
 }
 
-// Pantalla de registro
 const RegisterScreen: React.FC = () => {
   const navigation = useNavigation();
   const [form, setForm] = useState({
@@ -35,7 +32,7 @@ const RegisterScreen: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  // Función de validación
+  // Validate
   const validate = (): boolean => {
     let newErrors: Errors = {};
 
@@ -86,19 +83,22 @@ const RegisterScreen: React.FC = () => {
   const handleRegister = () => {
     if (validate()) {
       console.log('Registro exitoso', form);
-      // Aquí podrías añadir lógica para enviar los datos a un backend
+      // logic - backend
     }
   };
 
   return (
     <ScrollView contentContainerStyle={styles.scrollContainer}>
-      <View style={[styles.container, styles.container]}>
-        <Text style={[styles.title, styles.title]}>Registrarse</Text>
-        <Text style={[styles.subtitle, styles.subtitle]}>
-          Ingrese sus datos a continuación y regístrese gratis
+      <View style={[styles.container]}>
+        <Text style={[styles.title]}>
+          Registrarse
         </Text>
 
-        {/* Nombre y Apellido */}
+        <Text style={[styles.subtitle]}>
+          Ingrese sus datos a continuación y regístrese gratis como ingeniero informático de RootNet. ¡Conéctate con nosotros!
+        </Text>
+
+        {/* Name - Last name */}
         <View style={styles.row}>
           <InputField
             label="Nombre"
@@ -116,7 +116,7 @@ const RegisterScreen: React.FC = () => {
           />
         </View>
 
-        {/* Usuario */}
+        {/* User */}
         <InputField
           label="Usuario"
           placeholder="Ingresa un usuario (debe comenzar con @)"
@@ -125,7 +125,7 @@ const RegisterScreen: React.FC = () => {
           error={errors.usuario}
         />
 
-        {/* Dirección */}
+        {/* Address */}
         <InputField
           label="Dirección"
           placeholder="Ingresa tu dirección"
@@ -134,7 +134,7 @@ const RegisterScreen: React.FC = () => {
           error={errors.direccion}
         />
 
-        {/* Correo */}
+        {/* Email */}
         <InputField
           label="Correo"
           placeholder="Ingresa tu correo"
@@ -143,7 +143,7 @@ const RegisterScreen: React.FC = () => {
           error={errors.correo}
         />
 
-        {/* Contraseña */}
+        {/* Password */}
         <PasswordInput
           label="Contraseña"
           placeholder="********"
@@ -154,7 +154,7 @@ const RegisterScreen: React.FC = () => {
           setShowPassword={setShowPassword}
         />
 
-        {/* Confirmar Contraseña */}
+        {/* Confirmation Password */}
         <PasswordInput
           label="Confirmar Contraseña"
           placeholder="********"
@@ -165,7 +165,7 @@ const RegisterScreen: React.FC = () => {
           setShowPassword={setShowConfirmPassword}
         />
 
-        {/* Botones */}
+        {/* Button */}
         <ButtonContainer style={styles.buttonContainer}>
           <Button
             onPress={handleRegister}

@@ -1,4 +1,3 @@
-
 import { StyleSheet } from 'react-native';
 import { COLORS } from './colors';
 
@@ -39,7 +38,6 @@ export const styles = StyleSheet.create({
         paddingHorizontal: 30,
         lineHeight: 20,
     },
-
     buttonContainer: {
         flexDirection: "row",
         justifyContent: "space-between",
@@ -98,5 +96,5 @@ export const styles = StyleSheet.create({
     loginText: {
         fontFamily: "Roboto",
         color: COLORS.text,
-      },
+    },
 });

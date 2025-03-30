@@ -1,5 +1,3 @@
-
-
 import { StyleSheet } from 'react-native';
 import { COLORS } from './colors';
 export const styles = StyleSheet.create({
@@ -57,7 +55,7 @@ export const styles = StyleSheet.create({
     },
     icon: {
         marginRight: 10,
-      },
+    },
     registerButton: {
         backgroundColor: "#3D5CFF",
         padding: 12,
@@ -88,7 +86,7 @@ export const styles = StyleSheet.create({
     loginText: {
         fontFamily: "Roboto",
         color: COLORS.text,
-      },
+    },
     error: {
         color: "red",
         fontSize: 12,
@@ -96,13 +94,13 @@ export const styles = StyleSheet.create({
         fontFamily: "Roboto",
     },
     loginButton: {
-          backgroundColor: COLORS.primary,
-          padding: 15,
-          borderRadius: 5,
-          alignItems: "center",
-          marginBottom: 20,
+        backgroundColor: COLORS.primary,
+        padding: 15,
+        borderRadius: 5,
+        alignItems: "center",
+        marginBottom: 20,
     },
     scrollContainer: {
         flexGrow: 1,
-      },
+    },
 });

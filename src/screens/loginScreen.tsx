@@ -1,76 +1,103 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, Alert } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import { View, Text, TextInput, TouchableOpacity } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import { styles } from '../styles/loginStyles';
 
 const LoginScreen = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const navigation = useNavigation();
   const [showPassword, setShowPassword] = useState(false);
+  const [errors, setErrors] = useState<Errors>({});
 
-  const validateEmail = (email: string): boolean => {
-    const re = /^[\w.-]+@[\w.-]+\.[a-zA-Z]{2,}$/;
-    return re.test(email);
-  };
+  const [form, setForm] = useState({
+    correo: "",
+    contrasena: "",
+  });
+  interface Errors {
+    correo?: string;
+    contrasena?: string;
+  }
   
+  const validate = (): boolean => {
+    let newErrors: Errors = {};
+    // validate email
+    if (!form.correo) {
+      newErrors.correo = "El correo es requerido.";
+    } else if (!/^[\w.-]+@[a-zA-Z\d.-]+\.[a-zA-Z]{2,}$/.test(form.correo)) {
+      newErrors.correo = "El correo no tiene un formato válido.";
+      }
+
+    // validate password (min 6 characters)
+    if (!form.contrasena) {
+      newErrors.contrasena = "La contraseña es requerida.";
+    } else if (form.contrasena.length < 6) {
+      newErrors.contrasena = "La contraseña debe tener al menos 6 caracteres.";
+      }
+
+    setErrors(newErrors);
+      return Object.keys(newErrors).length === 0;
+  };
 
   const handleLogin = () => {
-    if (!email || !password) {
-      Alert.alert("Error", "Todos los campos son obligatorios.");
-      return;
-    }
-  
-    if (!email || !validateEmail(email)) {
-      Alert.alert("Error", "Ingresa un correo válido.");
-      return;
-    }
-    if (password.length < 6) {
-      Alert.alert("Error", "La contraseña debe tener al menos 6 caracteres.");
-      return;
-    }
-    Alert.alert("Éxito", "Inicio de sesión exitoso");
-  };
+    if (validate()) {
+      console.log("Inicio de Sesión exitoso", form);
+  }
+};
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Acceso</Text>
-
-      <Text style={styles.label}>Correo</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Ingresa tu correo"
-        placeholderTextColor="#888"
-        value={email}
-        onChangeText={setEmail}
-        keyboardType="email-address"
-        autoCapitalize="none"
-      />
-
-      <Text style={styles.label}>Contraseña</Text>
-      <View style={styles.passwordContainer}>
-        <TextInput
-          style={styles.inputPassword}
-          placeholder="********"
-          placeholderTextColor="#888"
-          secureTextEntry={!showPassword}
-          value={password}
-          onChangeText={setPassword}
-        />
-        <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-          <AntDesign name={showPassword ? "eye" : "eyeo"} size={24} color="#888" />
-        </TouchableOpacity>
+      <View>
+        <Text style={styles.title}>
+          Acceso
+        </Text>
+        <Text style={[styles.subtitle]}>
+          Rootnet te abre las puertas a un mundo de ingenieros en informática, apasionados y colaborativos. ¡Conéctate con nosotros!
+        </Text>
       </View>
 
-      <TouchableOpacity>
-        <Text style={styles.forgotText}>¿Olvidaste tu contraseña?</Text>
-      </TouchableOpacity>
+      <View>
+        <Text style={styles.label}>Correo</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Ingresa tu correo"
+          placeholderTextColor="#888"
+          onChangeText={(text) => setForm({ ...form, correo: text })}
+        />
+        {errors.correo && <Text style={styles.error}>{errors.correo}</Text>}
+      </View>
 
+      <View>
+        <Text style={styles.label}>Contraseña</Text>
+        <View style={styles.passwordContainer}>
+          <TextInput
+            style={styles.inputPassword}
+            placeholder="********"
+            placeholderTextColor="#888"
+            secureTextEntry={!showPassword}
+            value={form.contrasena}
+            onChangeText={(text) => setForm({ ...form, contrasena: text })}
+          />
+          <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+            <AntDesign name={showPassword ? "eye" : "eyeo"} size={24} color="#888" />
+          </TouchableOpacity>
+        </View>
+        {errors.contrasena && <Text style={styles.error}>{errors.contrasena}</Text>}
+      </View>
+
+      <View style={styles.containerForgot}>
+        <TouchableOpacity onPress={() => navigation.navigate("Register")}>
+          <Text style={styles.forgotText}>¡Quiero registrarme!</Text>
+        </TouchableOpacity>
+          
+        <TouchableOpacity>
+          <Text style={styles.forgotText}>¡Olvide mi contraseña!</Text>
+        </TouchableOpacity>
+      </View>
       <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
         <Text style={styles.loginText}>Acceso</Text>
       </TouchableOpacity>
     </View>
   );
 };
-
 
 export default LoginScreen;
