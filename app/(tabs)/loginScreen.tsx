@@ -1,34 +1,53 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import { View, Text, TextInput, TouchableOpacity, StyleSheet } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
-
-const LoginScreen = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
+  interface Errors {
+      correo?: string;
+      contrasena?: string;
+  }
+  
+  const LoginScreen: React.FC = () => {
+    const navigation = useNavigation();
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [showPassword, setShowPassword] = useState(false);
+    const [errors, setErrors] = useState<Errors>({});
+    const [form, setForm] = useState({
+          correo: "",
+          contrasena: "",
+    });
 
   const validateEmail = (email: string): boolean => {
     const re = /^[\w.-]+@[\w.-]+\.[a-zA-Z]{2,}$/;
     return re.test(email);
   };
   
+  const validate = (): boolean => {
+    let newErrors: Errors = {};
+    // validate email
+    if (!form.correo) {
+      newErrors.correo = "El correo es requerido.";
+      } else if (!/^[\w.-]+@[a-zA-Z\d.-]+\.[a-zA-Z]{2,}$/.test(form.correo)) {
+      newErrors.correo = "El correo no tiene un formato válido.";
+      }
+
+      // validate password (min 6 characters)
+      if (!form.contrasena) {
+        newErrors.contrasena = "La contraseña es requerida.";
+        } else if (form.contrasena.length < 6) {
+        newErrors.contrasena = "La contraseña debe tener al menos 6 caracteres.";
+        }
+
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+  };
 
   const handleLogin = () => {
-    if (!email || !password) {
-      Alert.alert("Error", "Todos los campos son obligatorios.");
-      return;
+    if (validate()) {
+    console.log("Inicio de Sesión exitoso", form);
     }
-  
-    if (!email || !validateEmail(email)) {
-      Alert.alert("Error", "Ingresa un correo válido.");
-      return;
-    }
-    if (password.length < 6) {
-      Alert.alert("Error", "La contraseña debe tener al menos 6 caracteres.");
-      return;
-    }
-    Alert.alert("Éxito", "Inicio de sesión exitoso");
-  };
+};
 
   return (
     <View style={styles.container}>
@@ -40,10 +59,9 @@ const LoginScreen = () => {
         placeholder="Ingresa tu correo"
         placeholderTextColor="#888"
         value={email}
-        onChangeText={setEmail}
-        keyboardType="email-address"
-        autoCapitalize="none"
+        onChangeText={(text) => setForm({ ...form, correo: text })}
       />
+      {errors.correo && <Text style={styles.error}>{errors.correo}</Text>}
 
       <Text style={styles.label}>Contraseña</Text>
       <View style={styles.passwordContainer}>
@@ -53,17 +71,26 @@ const LoginScreen = () => {
           placeholderTextColor="#888"
           secureTextEntry={!showPassword}
           value={password}
-          onChangeText={setPassword}
+          onChangeText={(text) => {
+            setPassword(text);
+            setForm({ ...form, contrasena: text });
+        }}
         />
         <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
           <AntDesign name={showPassword ? "eye" : "eyeo"} size={24} color="#888" />
         </TouchableOpacity>
+        {errors.contrasena && <Text style={styles.error}>{errors.contrasena}</Text>}
       </View>
 
-      <TouchableOpacity>
-        <Text style={styles.forgotText}>¿Olvidaste tu contraseña?</Text>
-      </TouchableOpacity>
-
+      <View style={styles.containerForgot}>
+        <TouchableOpacity onPress={() => navigation.navigate("Register")}>
+          <Text style={styles.forgotText}>¡Quiero registrarme!</Text>
+        </TouchableOpacity>
+          
+        <TouchableOpacity>
+          <Text style={styles.forgotText}>¿Olvidaste tu contraseña?</Text>
+        </TouchableOpacity>
+      </View>
       <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
         <Text style={styles.loginText}>Acceso</Text>
       </TouchableOpacity>
@@ -110,10 +137,22 @@ const styles = StyleSheet.create({
     flex: 1,
     color: "#fff",
   },
+  error: {
+    color: "red",
+    fontSize: 12,
+    marginBottom: 20,
+    fontFamily: "Roboto",
+  },
+  containerForgot: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    width: "100%",
+    marginTop: 20,
+  },
   forgotText: {
     fontFamily: "Roboto",
     color: "#bbb",
-    textAlign: "right",
     marginBottom: 20,
   },
   loginButton: {
