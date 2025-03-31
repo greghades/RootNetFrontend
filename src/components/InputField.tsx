@@ -2,9 +2,9 @@ import React from 'react';
 import { View, Text, TextInput} from 'react-native';
 import { COLORS } from '../styles/colors';
 import { styles } from '../styles/globalStyles';
-// Props para el componente InputField
+// Props for component InputField
 type InputFieldProps = {
-  label: string;
+  label?: string;
   placeholder: string;
   value: string;
   onChangeText: (text: string) => void;
@@ -20,7 +20,9 @@ const InputField: React.FC<InputFieldProps> = ({
 }) => {
   return (
     <View style={styles.inputContainer}>
-      <Text style={styles.label}>{label}</Text>
+
+       {/* check if they have sent a label */}
+      {label && <Text style={styles.label}>{label}</Text>}
       <TextInput
         style={styles.input}
         placeholder={placeholder}

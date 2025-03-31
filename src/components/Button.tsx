@@ -2,18 +2,18 @@ import React from 'react';
 import { TouchableOpacity, Text } from 'react-native';
 import { styles } from '../styles/globalStyles';
 
-// Props para el componente Button
+// Props for component Button
 type ButtonProps = {
   onPress: () => void;
   title: string;
-  style?: object; // Estilo personalizado para el botón
-  textStyle?: object; // Estilo personalizado para el texto
+  style?: object;
+  textStyle?: object;
 };
 
 const Button: React.FC<ButtonProps> = ({ onPress, title, style, textStyle }) => {
   return (
-    <TouchableOpacity style={[styles.button, style]} onPress={onPress}>
-      <Text style={[styles.buttonText, textStyle]}>{title}</Text>
+    <TouchableOpacity style={[style]} onPress={onPress}>
+      <Text style={[textStyle]}>{title}</Text>
     </TouchableOpacity>
   );
 };

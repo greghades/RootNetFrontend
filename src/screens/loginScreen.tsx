@@ -89,7 +89,7 @@ const LoginScreen = () => {
           <Text style={styles.forgotText}>¡Quiero registrarme!</Text>
         </TouchableOpacity>
           
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate("ForgotOne")}>
           <Text style={styles.forgotText}>¡Olvide mi contraseña!</Text>
         </TouchableOpacity>
       </View>

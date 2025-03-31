@@ -15,7 +15,7 @@ export const  styles = StyleSheet.create({
     marginBottom: 20,
   },
   subtitle: {
-    color: "#ccc",
+    color: COLORS.secondaryText,
     marginBottom: 30,
     textAlign: "left",
     fontFamily: "Roboto",
@@ -29,19 +29,21 @@ export const  styles = StyleSheet.create({
   },
   input: {
     fontFamily: "Roboto",
-    backgroundColor: 'rgb(62, 62, 85)',
+    backgroundColor: COLORS.input,
     color: COLORS.text,
     padding: 10,
     borderRadius: 5,
     marginBottom: 15,
+    width: "100%",
   },
   passwordContainer: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: 'rgb(62, 62, 85)',
+    backgroundColor: COLORS.input,
     padding: 10,
     borderRadius: 5,
     marginBottom: 15,
+    width: "100%",
   },
   inputPassword: {
     fontFamily: "Roboto",
@@ -63,7 +65,7 @@ export const  styles = StyleSheet.create({
   },
   forgotText: {
     fontFamily: "Roboto",
-    color: "#bbb",
+    color: COLORS.textLittle,
     marginBottom: 20,
   },
   loginButton: {
