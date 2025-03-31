@@ -23,7 +23,6 @@ export const styles = StyleSheet.create({
         fontFamily: "Roboto",
         fontSize: 35,
         padding: 30,
-        fontWeight: 400,
         color: COLORS.text,
         marginBottom: 10,
         lineHeight: 40,
@@ -47,7 +46,7 @@ export const styles = StyleSheet.create({
     },
     label: {
         fontFamily: "Roboto",
-        color: "#fff",
+        color: COLORS.text,
         marginBottom: 10,
     },
     inputContainer: {
@@ -56,12 +55,13 @@ export const styles = StyleSheet.create({
         marginBottom: 20,
     },
     input: {
-        backgroundColor: "rgb(62, 62, 85)",
-        color: "#fff",
+        backgroundColor: COLORS.input,
+        color: COLORS.text,
         padding: 12,
         borderRadius: 10,
         marginBottom: 10,
         fontFamily: "Roboto",
+        width: "100%",
     },
     accessButton: {
         backgroundColor: COLORS.primary,

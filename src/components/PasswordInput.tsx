@@ -3,7 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-nativ
 import { AntDesign } from '@expo/vector-icons';
 import { COLORS } from '../styles/colors';
 import { styles } from '../styles/registerStyles';
-// Props para el componente PasswordInput
+// Props for component PasswordInput
 type PasswordInputProps = {
   label: string;
   placeholder: string;

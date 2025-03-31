@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
-import { View, Text, ScrollView } from 'react-native';
+import { View, Text, ScrollView, Alert } from 'react-native';
 import { styles } from '../styles/registerStyles';
 import InputField from '../components/InputField';
 import PasswordInput from '../components/PasswordInput';
@@ -82,8 +82,14 @@ const RegisterScreen: React.FC = () => {
 
   const handleRegister = () => {
     if (validate()) {
-      console.log('Registro exitoso', form);
-      // logic - backend
+      Alert.alert(
+        "Registro exitoso",
+        "Ya puedes iniciar sesión con Rootnet.",
+          [
+            { text: "Aceptar", onPress: () => navigation.navigate("Login") }
+          ]
+      );
+      console.log("Registro completado", form);
     }
   };
 
@@ -95,7 +101,7 @@ const RegisterScreen: React.FC = () => {
         </Text>
 
         <Text style={[styles.subtitle]}>
-          Ingrese sus datos a continuación y regístrese gratis como ingeniero informático de RootNet. ¡Conéctate con nosotros!
+          Ingrese sus datos a continuación y regístrate gratis como ingeniero informático de RootNet. ¡Conéctate con nosotros!
         </Text>
 
         {/* Name - Last name */}

@@ -1,21 +1,24 @@
 import { StyleSheet } from 'react-native';
 import { COLORS } from './colors';
 export const styles = StyleSheet.create({
+    scrollContainer: {
+        flexGrow: 1,
+    },
     container: {
         flex: 1,
-        backgroundColor: "#1F1F39",
+        backgroundColor: COLORS.background,
         padding: 30,
     },
     title: {
         fontFamily: "Roboto",
         fontSize: 28,
-        color: "#fff",
+        color: COLORS.text,
         marginBottom: 20,
         textAlign: "left",
         marginLeft: 8,
     },
     subtitle: {
-        color: "#ccc",
+        color: COLORS.secondaryText,
         marginBottom: 30,
         textAlign: "left",
         fontFamily: "Roboto",
@@ -30,7 +33,7 @@ export const styles = StyleSheet.create({
     },
     label: {
         fontFamily: "Roboto",
-        color: "#fff",
+        color: COLORS.text,
         marginBottom: 10,
     },
     inputContainer: {
@@ -39,25 +42,27 @@ export const styles = StyleSheet.create({
         marginBottom: 20,
     },
     input: {
-        backgroundColor: "rgb(62, 62, 85)",
-        color: "#fff",
+        flex: 1,
+        backgroundColor: COLORS.input,
+        color: COLORS.text,
         padding: 12,
         borderRadius: 10,
-        marginBottom: 10,
         fontFamily: "Roboto",
     },
     passwordContainer: {
         flexDirection: "row",
         alignItems: "center",
-        backgroundColor: "rgb(62, 62, 85)",
+        backgroundColor: COLORS.input,
         borderRadius: 10,
-        justifyContent: "space-between",
+        paddingHorizontal: 10,
+        width: "100%",
     },
     icon: {
-        marginRight: 10,
+        marginLeft: 10,
+        alignSelf: "center",
     },
     registerButton: {
-        backgroundColor: "#3D5CFF",
+        backgroundColor: COLORS.primary,
         padding: 12,
         borderRadius: 10,
         alignItems: "center",
@@ -65,14 +70,14 @@ export const styles = StyleSheet.create({
         marginTop: 20,
     },
     registerText: {
-        color: "#fff",
+        color: COLORS.text,
         fontSize: 16,
         fontFamily: "Roboto",
     },
     
     forgotText: {
         fontFamily: "Roboto",
-        color: "#bbb",
+        color: COLORS.textLittle,
         textAlign: "center",
         marginVertical: 20,
     },
@@ -99,8 +104,5 @@ export const styles = StyleSheet.create({
         borderRadius: 5,
         alignItems: "center",
         marginBottom: 20,
-    },
-    scrollContainer: {
-        flexGrow: 1,
     },
 });
