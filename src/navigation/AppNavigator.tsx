@@ -6,6 +6,7 @@ import RegisterScreen from '../screens/registerScreen';
 import ForgotPasswordOneScreen from '../screens/forgotPasswordOneScreen';
 import ForgotPasswordTwoScreen from '../screens/forgotPasswordTwoScreen';
 import ForgotPasswordThreeScreen from '../screens/forgotPasswordThreeScreen';
+import FeedScreen from '../screens/feedScreen';
 import { COLORS } from '../styles/colors';
 
 const Stack = createStackNavigator();
@@ -63,6 +64,11 @@ const AppNavigator = () => {
         options={{
           headerTitle: '', 
         }}
+      />
+      <Stack.Screen
+        name="Feed"
+        component={FeedScreen}
+        options={{ headerShown: false }}
       />
     </Stack.Navigator>
   );

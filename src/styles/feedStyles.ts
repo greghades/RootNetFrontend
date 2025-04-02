@@ -50,12 +50,12 @@ export const styles = StyleSheet.create({
     },
     actions: {
       flexDirection: 'row',
-      justifyContent: 'space-between',
       marginTop: 10,
     },
     actionButton: {
       flexDirection: 'row',
       alignItems: 'center',
+      marginRight: 25,
     },
     actionText: {
       fontFamily: 'Roboto',
@@ -71,15 +71,25 @@ export const styles = StyleSheet.create({
     },
   });
 
+export const feedStyles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: COLORS.background,
+      paddingTop: 25, // Espacio para la barra de estado
+    },
+    scrollContainer: {
+      paddingBottom: 80, // Espacio para la barra de navegación y el botón flotante
+    },
+  });
+
   export const stylesBottomNavBar = StyleSheet.create({
     container: {
         flexDirection: 'row',
         justifyContent: 'space-around',
         alignItems: 'center',
-        backgroundColor: COLORS.background,
+        backgroundColor: "#111111",
         paddingVertical: 10,
         borderTopWidth: 1,
-        borderTopColor: COLORS.secondaryText,
         position: 'absolute',
         bottom: 0,
         left: 0,

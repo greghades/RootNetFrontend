@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { View, ActivityIndicator } from "react-native";
+
 import * as Font from "expo-font";
 import AppNavigator from "../../src/navigation/AppNavigator";
 
@@ -36,7 +37,11 @@ const App = () => {
   }
 
   return (
+    
+    <>
     <AppNavigator />
+    
+    </>
   );
 };
 

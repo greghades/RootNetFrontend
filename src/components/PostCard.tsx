@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, Image, TouchableOpacity} from 'react-native';
-import { AntDesign } from '@expo/vector-icons';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import { COLORS } from '../styles/colors';
 import { styles } from '../styles/feedStyles'; 
 
@@ -11,7 +12,7 @@ type PostCardProps = {
   date: string;
   content: string;
   image?: string; // Imagen opcional
-  retweets: number;
+  saves: number;
   likes: number;
   comments: number;
 };
@@ -22,7 +23,7 @@ const PostCard: React.FC<PostCardProps> = ({
   date,
   content,
   image,
-  retweets,
+  saves,
   likes,
   comments,
 }) => {
@@ -56,16 +57,16 @@ const PostCard: React.FC<PostCardProps> = ({
       {/* Íconos de interacción */}
       <View style={styles.actions}>
         <TouchableOpacity style={styles.actionButton}>
-          <AntDesign name="retweet" size={20} color={COLORS.secondaryText} />
-          <Text style={styles.actionText}>{retweets}</Text>
+          <FontAwesome6 name="comment-dots" size={24} color={COLORS.secondaryText}  />
+          <Text style={styles.actionText}>{comments}</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.actionButton}>
-          <AntDesign name="heart" size={20} color={COLORS.secondaryText} />
+          <FontAwesome6 name="heart" size={24} color={COLORS.secondaryText}  />
           <Text style={styles.actionText}>{likes}</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.actionButton}>
-          <AntDesign name="message1" size={20} color={COLORS.secondaryText} />
-          <Text style={styles.actionText}>{comments}</Text>
+        <MaterialIcons name="bookmark-border" size={24} color={COLORS.secondaryText} />
+          <Text style={styles.actionText}>{saves}</Text>
         </TouchableOpacity>
       </View>
 
