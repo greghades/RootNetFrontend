@@ -130,16 +130,6 @@ const RegisterScreen: React.FC = () => {
           onChangeText={(text) => setForm({ ...form, usuario: text })}
           error={errors.usuario}
         />
-
-        {/* Address */}
-        <InputField
-          label="Dirección"
-          placeholder="Ingresa tu dirección"
-          value={form.direccion}
-          onChangeText={(text) => setForm({ ...form, direccion: text })}
-          error={errors.direccion}
-        />
-
         {/* Email */}
         <InputField
           label="Correo"
@@ -150,27 +140,29 @@ const RegisterScreen: React.FC = () => {
         />
 
         {/* Password */}
-        <PasswordInput
-          label="Contraseña"
-          placeholder="********"
-          value={form.contrasena}
-          onChangeText={(text) => setForm({ ...form, contrasena: text })}
-          error={errors.contrasena}
-          showPassword={showPassword}
-          setShowPassword={setShowPassword}
-        />
+        <View style={styles.row}>
 
-        {/* Confirmation Password */}
-        <PasswordInput
-          label="Confirmar Contraseña"
-          placeholder="********"
-          value={form.confirmarContrasena}
-          onChangeText={(text) => setForm({ ...form, confirmarContrasena: text })}
-          error={errors.confirmarContrasena}
-          showPassword={showConfirmPassword}
-          setShowPassword={setShowConfirmPassword}
-        />
+            <PasswordInput
+              label="Contraseña"
+              placeholder="********"
+              value={form.contrasena}
+              onChangeText={(text) => setForm({ ...form, contrasena: text })}
+              error={errors.contrasena}
+              showPassword={showPassword}
+              setShowPassword={setShowPassword}
+            />
 
+            {/* Confirmation Password */}
+            <PasswordInput
+              label="Confirmar Contraseña"
+              placeholder="********"
+              value={form.confirmarContrasena}
+              onChangeText={(text) => setForm({ ...form, confirmarContrasena: text })}
+              error={errors.confirmarContrasena}
+              showPassword={showConfirmPassword}
+              setShowPassword={setShowConfirmPassword}
+            />
+        </View>
         {/* Button */}
         <ButtonContainer style={styles.buttonContainer}>
           <Button

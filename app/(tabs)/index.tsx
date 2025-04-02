@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
-import { View, ActivityIndicator } from "react-native";
 import * as Font from "expo-font";
+import React, { useEffect, useState } from "react";
+import { ActivityIndicator, Platform, StatusBar, View } from "react-native";
 import AppNavigator from "../../src/navigation/AppNavigator";
-
+import * as NavigationBar from 'expo-navigation-bar';
 
 const App = () => {
   const [fontLoaded, setFontLoaded] = useState(false);
@@ -10,13 +10,29 @@ const App = () => {
   // Carry - font
   const loadFonts = async () => {
     await Font.loadAsync({
-      "Roboto": require("../../src/assets/fonts/Roboto-VariableFont_wdth,wght.ttf"),
+      Roboto: require("../../src/assets/fonts/Roboto-VariableFont_wdth,wght.ttf"),
     });
     setFontLoaded(true);
   };
 
   useEffect(() => {
     loadFonts();
+  }, []);
+
+  useEffect(() => {
+    if (Platform.OS === 'android') {
+      // Ocultar la barra de navegación
+      NavigationBar.setVisibilityAsync('hidden');
+      
+      // Cambiar el color de fondo a negro cuando se muestre
+      NavigationBar.setBackgroundColorAsync('#000000');
+      
+      // Mostrar temporalmente al deslizar desde abajo
+      NavigationBar.setBehaviorAsync('overlay-swipe');
+      
+      // Botones claros para fondo oscuro
+      NavigationBar.setButtonStyleAsync('light');
+    }
   }, []);
 
   // Carry
@@ -36,7 +52,10 @@ const App = () => {
   }
 
   return (
-    <AppNavigator />
+    <>
+      <StatusBar backgroundColor="#111111" barStyle="light-content" />
+      <AppNavigator />
+    </>
   );
 };
 

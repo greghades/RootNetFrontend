@@ -9,6 +9,9 @@ export const styles = StyleSheet.create({
         backgroundColor: COLORS.background,
         padding: 30,
     },
+    loginText: {
+        color: COLORS.secondaryText,
+    },
     title: {
         fontFamily: "Roboto",
         fontSize: 28,
@@ -86,23 +89,18 @@ export const styles = StyleSheet.create({
         justifyContent: "space-between",
         alignItems: "center",
         width: "100%",
-        marginTop: 20,
+        marginTop: 0,
     },
-    loginText: {
-        fontFamily: "Roboto",
-        color: COLORS.text,
-    },
+    loginButton: {
+        backgroundColor: 'transparent',
+        borderWidth: 1,
+        borderColor: COLORS.primary,
+      },
     error: {
         color: "red",
         fontSize: 12,
         marginBottom: 20,
         fontFamily: "Roboto",
     },
-    loginButton: {
-        backgroundColor: COLORS.primary,
-        padding: 15,
-        borderRadius: 5,
-        alignItems: "center",
-        marginBottom: 20,
-    },
+
 });
