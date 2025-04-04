@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, TouchableOpacity, ScrollView, TextInput, Alert } from "react-native";
 import { useNavigation } from '@react-navigation/native';
-import { styles } from '../styles/forgotPasswordThreeStyle';
+import { styles } from '../styles/forgotPasswordThreeStyles';
 import { AntDesign } from "@expo/vector-icons";
 
 interface Errors {
@@ -9,7 +9,7 @@ interface Errors {
     confirmarContrasena?: string;
 }
 
-const ForgotPasswordThreeStyle = () => {
+const ForgotPasswordThreeScreen = () => {
     const navigation = useNavigation();
     const [form, setForm] = useState({
         contrasena: '',
@@ -107,4 +107,4 @@ const ForgotPasswordThreeStyle = () => {
     );
 };
 
-export default ForgotPasswordThreeStyle;
+export default ForgotPasswordThreeScreen;

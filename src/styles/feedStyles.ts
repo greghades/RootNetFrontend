@@ -1,4 +1,3 @@
-// Estilos para el componente
 import {StyleSheet } from 'react-native';
 import { COLORS } from '../styles/colors';
 
@@ -75,10 +74,10 @@ export const feedStyles = StyleSheet.create({
     container: {
       flex: 1,
       backgroundColor: COLORS.background,
-      paddingTop: 25, // Espacio para la barra de estado
+      paddingTop: 25, // Space for the status bar
     },
     scrollContainer: {
-      paddingBottom: 80, // Espacio para la barra de navegación y el botón flotante
+      paddingBottom: 80, // Space for navigation bar and floating button
     },
   });
 
@@ -102,7 +101,7 @@ export const feedStyles = StyleSheet.create({
   export const stylesFloatingActionButton = StyleSheet.create({
     button: {
       position: 'absolute',
-      bottom: 80, // Ajustado para que esté por encima de la barra de navegación
+      bottom: 80, // Adjusted to be above the navigation bar
       right: 20,
       backgroundColor: COLORS.primary,
       borderRadius: 30,
@@ -110,8 +109,8 @@ export const feedStyles = StyleSheet.create({
       height: 60,
       justifyContent: 'center',
       alignItems: 'center',
-      elevation: 5, // Sombra en Android
-      shadowColor: '#000', // Sombra en iOS
+      elevation: 5, // Shadow on Android
+      shadowColor: '#000', // Shadow on iOS
       shadowOffset: { width: 0, height: 2 },
       shadowOpacity: 0.3,
       shadowRadius: 3,

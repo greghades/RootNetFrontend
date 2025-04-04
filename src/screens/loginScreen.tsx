@@ -38,12 +38,6 @@ const LoginScreen = () => {
       return Object.keys(newErrors).length === 0;
   };
 
-  const handleLogin = () => {
-    if (validate()) {
-      console.log("Inicio de Sesión exitoso", form);
-  }
-};
-
   return (
     <View style={styles.container}>
       <View>
@@ -93,7 +87,12 @@ const LoginScreen = () => {
           <Text style={styles.forgotText}>¡Olvide mi contraseña!</Text>
         </TouchableOpacity>
       </View>
-      <TouchableOpacity style={styles.loginButton} onPress={() => navigation.navigate("Feed")}>
+      <TouchableOpacity style={styles.loginButton} onPress={() => {
+          if (validate()) {
+            navigation.navigate("Feed");
+          }
+        }}
+      >
         <Text style={styles.loginText}>Acceso</Text>
       </TouchableOpacity>
     </View>

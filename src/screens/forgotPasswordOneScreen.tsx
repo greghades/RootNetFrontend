@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, Image, ScrollView } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { styles } from '../styles/forgotPasswordOneStyle';
+import { styles } from '../styles/forgotPasswordOneStyles';
 
 interface Errors {
     correo?: string;

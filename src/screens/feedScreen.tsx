@@ -1,19 +1,16 @@
 import React from 'react';
-import { View, ScrollView, StyleSheet } from 'react-native';
-import { COLORS } from '../styles/colors';
-import { feedStyles } from '../styles/feedStyles'; // Asegúrate de que la ruta sea correcta
+import { View, ScrollView } from 'react-native';
+import { feedStyles } from '../styles/feedStyles';
 import PostCard from '../components/PostCard';
 import BottomNavBar from '../components/BottomNavBar';
 import FloatingActionButton from '../components/FloatingActionButton';
 
-// Datos estáticos para simular las publicaciones
 const mockPosts = [
   {
     username: 'Marianee',
     handle: '@marianee',
     date: '1/21/20',
-    content:
-      'Hey @theflaticon @iconmonstr @pixelsz @ielbruce @romanshamin @vect @glyphish! Check our new article "Top icons Packs and Resources for Web" 😎 marianee.com/blog/top-icons...',
+    content: 'Hey @theflaticon @iconmonstr @pixelsz @ielbruce @romanshamin @vect @glyphish! Check our new article "Top icons Packs and Resources for Web" 😎 marianee.com/blog/top-icons...',
     image: 'https://i.pinimg.com/474x/d7/47/f7/d747f70ce52b0df12c1542b280fa8d76.jpg', 
     saves: 7,
     likes: 3,
@@ -41,7 +38,7 @@ const mockPosts = [
 
 const FeedScreen: React.FC = () => {
   const handleCreatePost = () => {
-    // Lógica para crear una nueva publicación (por ahora solo un log)
+    // Logic to create a new post (just a log for now)
     console.log('Crear nueva publicación');
   };
 
@@ -63,10 +60,10 @@ const FeedScreen: React.FC = () => {
         ))}
       </ScrollView>
 
-      {/* Botón flotante */}
+      {/* floating button */}
       <FloatingActionButton onPress={handleCreatePost} />
 
-      {/* Barra de navegación inferior */}
+      {/* Bottom navigation bar */}
       <BottomNavBar />
     </View>
   );

@@ -5,13 +5,13 @@ import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import { COLORS } from '../styles/colors';
 import { styles } from '../styles/feedStyles'; 
 
-// Props para el componente PostCard
+// Props for component PostCard
 type PostCardProps = {
   username: string;
   handle: string;
   date: string;
   content: string;
-  image?: string; // Imagen opcional
+  image?: string;
   saves: number;
   likes: number;
   comments: number;
@@ -29,7 +29,7 @@ const PostCard: React.FC<PostCardProps> = ({
 }) => {
   return (
     <View style={styles.container}>
-      {/* Foto de perfil y datos del usuario */}
+      {/* Profile photo and user data */}
       <View style={styles.header}>
         <Image
           source={require('../assets/images/default-profile.jpg')} // Imagen por defecto
@@ -42,10 +42,10 @@ const PostCard: React.FC<PostCardProps> = ({
         </View>
       </View>
 
-      {/* Contenido de la publicación */}
+      {/* Post content */}
       <Text style={styles.content}>{content}</Text>
 
-      {/* Imagen (si existe) */}
+      {/* Image (if it exists) */}
       {image && (
         <Image
           source={{ uri: image }}
@@ -54,7 +54,7 @@ const PostCard: React.FC<PostCardProps> = ({
         />
       )}
 
-      {/* Íconos de interacción */}
+      {/* Interaction icons */}
       <View style={styles.actions}>
         <TouchableOpacity style={styles.actionButton}>
           <FontAwesome6 name="comment-dots" size={24} color={COLORS.secondaryText}  />
@@ -70,7 +70,7 @@ const PostCard: React.FC<PostCardProps> = ({
         </TouchableOpacity>
       </View>
 
-      {/* Línea divisoria */}
+      {/* dividing line */}
       <View style={styles.divider} />
     </View>
   );

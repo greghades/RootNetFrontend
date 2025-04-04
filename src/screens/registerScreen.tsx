@@ -101,7 +101,7 @@ const RegisterScreen: React.FC = () => {
         </Text>
 
         <Text style={[styles.subtitle]}>
-          Ingrese sus datos a continuación y regístrate gratis como ingeniero informático de RootNet. ¡Conéctate con nosotros!
+          Ingresa tus datos a continuación y regístrate gratis como ingeniero informático de RootNet. ¡Conéctate con nosotros!
         </Text>
 
         {/* Name - Last name */}
