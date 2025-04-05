@@ -1,5 +1,6 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
+import { COLORS } from '../styles/colors';
 import WelcomeScreen from '../screens/welcomeScreen';
 import LoginScreen from '../screens/loginScreen';
 import RegisterScreen from '../screens/registerScreen';
@@ -7,7 +8,11 @@ import ForgotPasswordOneScreen from '../screens/forgotPasswordOneScreen';
 import ForgotPasswordTwoScreen from '../screens/forgotPasswordTwoScreen';
 import ForgotPasswordThreeScreen from '../screens/forgotPasswordThreeScreen';
 import FeedScreen from '../screens/feedScreen';
-import { COLORS } from '../styles/colors';
+import MyUser from '../screens/myUserScreen';
+import MyPostsUserScreen from '../screens/myPostsUserScreen';
+import EditUserScreen from '../screens/editUserScreen';
+import PasswordUserScreen from '../screens/passwordUserScreen';
+import PilotsUserScreen from '../screens/pilotsUserScreen';
 
 const Stack = createStackNavigator();
 
@@ -17,9 +22,9 @@ const AppNavigator = () => {
       initialRouteName="Welcome"
       screenOptions={{
         headerStyle: {
-          backgroundColor: COLORS.background, // Fondo del encabezado igual al fondo de la pantalla
+          backgroundColor: COLORS.background, // Header background equal to screen background
         },
-        headerTintColor: COLORS.text, // Color del botón de regresar (blanco)
+        headerTintColor: COLORS.text, // Back button color (white)
         headerTitleStyle: {
           fontFamily: 'Roboto',
         },
@@ -28,7 +33,7 @@ const AppNavigator = () => {
       <Stack.Screen
         name="Welcome"
         component={WelcomeScreen}
-        options={{ headerShown: false }} // Ocultar el encabezado en WelcomeScreen
+        options={{ headerShown: false }} // Hide the header in WelcomeScreen
       />
       <Stack.Screen
         name="Login"
@@ -68,7 +73,44 @@ const AppNavigator = () => {
       <Stack.Screen
         name="Feed"
         component={FeedScreen}
-        options={{ headerShown: false }}
+        options={{
+          headerTitle: '', 
+        }}
+      />
+      <Stack.Screen
+        name="MyUser"
+        component={MyUser}
+        options={{
+          headerTitle: '', 
+        }}
+      />
+      <Stack.Screen
+        name="MyPosts"
+        component={MyPostsUserScreen}
+        options={{
+          headerTitle: '', 
+        }}
+      />
+      <Stack.Screen
+        name="EditUser"
+        component={EditUserScreen}
+        options={{
+          headerTitle: '', 
+        }}
+      />
+      <Stack.Screen
+        name="PasswordUser"
+        component={PasswordUserScreen}
+        options={{
+          headerTitle: '', 
+        }}
+      />
+      <Stack.Screen
+        name="PilotsUser"
+        component={PilotsUserScreen}
+        options={{
+          headerTitle: '', 
+        }}
       />
     </Stack.Navigator>
   );

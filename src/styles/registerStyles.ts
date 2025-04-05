@@ -9,9 +9,6 @@ export const styles = StyleSheet.create({
         backgroundColor: COLORS.background,
         padding: 30,
     },
-    loginText: {
-        color: COLORS.secondaryText,
-    },
     title: {
         fontFamily: "Roboto",
         fontSize: 28,
@@ -84,6 +81,10 @@ export const styles = StyleSheet.create({
         textAlign: "center",
         marginVertical: 20,
     },
+    loginText: {
+        fontFamily: "Roboto",
+        color: COLORS.secondaryText,
+    },
     buttonContainer: {
         flexDirection: "column",
         justifyContent: "space-between",
@@ -95,7 +96,7 @@ export const styles = StyleSheet.create({
         backgroundColor: 'transparent',
         borderWidth: 1,
         borderColor: COLORS.primary,
-      },
+    },
     error: {
         color: "red",
         fontSize: 12,
