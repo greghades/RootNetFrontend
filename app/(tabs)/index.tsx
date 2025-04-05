@@ -21,16 +21,16 @@ const App = () => {
 
   useEffect(() => {
     if (Platform.OS === 'android') {
-      // Ocultar la barra de navegación
+      // Hide the navigation bar
       NavigationBar.setVisibilityAsync('hidden');
       
-      // Cambiar el color de fondo a negro cuando se muestre
+      // Change the background color to black when displayed
       NavigationBar.setBackgroundColorAsync('#000000');
       
       // Mostrar temporalmente al deslizar desde abajo
       NavigationBar.setBehaviorAsync('overlay-swipe');
       
-      // Botones claros para fondo oscuro
+      // Light buttons for dark background
       NavigationBar.setButtonStyleAsync('light');
     }
   }, []);
