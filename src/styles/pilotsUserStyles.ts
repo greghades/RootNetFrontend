@@ -22,7 +22,7 @@ export const styles = StyleSheet.create({
     },
     text: {
         fontFamily: "Roboto",
-        color: "#ddd",
+        color: COLORS.textLittle,
         fontSize: 14,
         marginTop: 5,
         lineHeight: 20,

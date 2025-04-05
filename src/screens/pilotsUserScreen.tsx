@@ -7,7 +7,7 @@ const PrivacyPolicyScreen = () => {
     const navigation = useNavigation();
 
     return (
-        <ScrollView style={styles.content}>
+        <ScrollView>
             <View style={styles.container}>
                 <Text style={styles.title}>Políticas de Privacidad</Text>
                     <Text style={styles.text}>
