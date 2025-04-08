@@ -12,8 +12,8 @@ const MyUserScreen = () => {
 
         <View style={styles.profileContainer}>
             <Image
-            source={{ uri: "https://randomuser.me/api/portraits/men/10.jpg" }}
-            style={styles.profileImage}
+                source={require("../assets/images/profile-user.png")}
+                style={styles.profileImage}
             />
         </View>
 
