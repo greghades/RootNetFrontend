@@ -38,6 +38,7 @@ const PrivacyPolicyScreen = () => {
                     <Text style={styles.text}>- Acceder a tus datos y actualizarlos</Text>
                     <Text style={styles.text}>- Eliminar y actualizar tus publicaciones dentro {'\n'}de las 24h luego de publicarlas</Text>
                     <Text style={styles.text}>- Actualizar tu contraseña para mejorar la seguridad de tus datos</Text>
+                    <Text style={styles.text}>- Indicar si quieres o no actuar como colaborador, ya que tus conocimientos son tuyos y por tanto, estas en el derecho de indicar si quieres compartir tus conocimientos o prestarle apoyo a otros usuarios</Text>
 
                     <Text style={styles.sectionTitle}>4. Seguridad de los datos</Text>
                     <Text style={styles.text}>

@@ -21,9 +21,9 @@ export const  styles = StyleSheet.create({
     profileImage: {
         width: 100,
         height: 100,
-        borderRadius: 50,
+        borderRadius: 15,
         borderWidth: 2,
-        borderColor: COLORS.text,
+        borderColor: COLORS.accent,
     },
     option: {
         flexDirection: "row",
