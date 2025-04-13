@@ -1,4 +1,4 @@
-import {StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { COLORS } from '../styles/colors';
 
 export const styles = StyleSheet.create({
@@ -49,6 +49,7 @@ export const styles = StyleSheet.create({
         padding: 10,
         borderRadius: 8,
         fontFamily: "Roboto",
+        flex: 1,
     },
     characterCount: {
         fontSize: 12,
@@ -166,4 +167,9 @@ export const styles = StyleSheet.create({
         marginBottom: 20,
         fontFamily: "Roboto",
     },
+    flagAndCode: {
+    color: "#fff",
+    fontSize: 16,
+    fontFamily: "Roboto",
+  },
 });
