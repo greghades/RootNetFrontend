@@ -13,7 +13,7 @@ export const styles = StyleSheet.create({
     profileImage: {
       width: 40,
       height: 40,
-      borderRadius: 20,
+      borderRadius: 8,
       marginRight: 10,
     },
     userInfo: {
@@ -23,7 +23,6 @@ export const styles = StyleSheet.create({
       fontFamily: 'Roboto',
       fontSize: 16,
       color: COLORS.text,
-      fontWeight: 'bold',
     },
     handle: {
       fontFamily: 'Roboto',
