@@ -5,7 +5,7 @@ import BottomNavBar from '../components/BottomNavBar';
 import FloatingActionButton from '../components/FloatingActionButton';
 import { styles } from '../styles/myPostsUserStyles';
 
-const ProfileScreen: React.FC = () => {
+const MyPostsUserScreen: React.FC = () => {
     // Example data
     const userData = {
         profileImage: require('../assets/images/profile-user.png'),
@@ -51,4 +51,4 @@ const ProfileScreen: React.FC = () => {
     );
 };
 
-export default ProfileScreen;
+export default MyPostsUserScreen;

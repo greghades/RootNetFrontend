@@ -10,7 +10,7 @@ interface Errors {
     confirmarContrasena?: string;
 }
 
-const UpdatePasswordScreen = () => {
+const PasswordUserScreen = () => {
     const navigation = useNavigation();
     const [form, setForm] = useState({
         contrasenaActual: '',
@@ -137,4 +137,4 @@ const UpdatePasswordScreen = () => {
     );
 };
 
-export default UpdatePasswordScreen;
+export default PasswordUserScreen;

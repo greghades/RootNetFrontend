@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, Image, TouchableOpacity, Alert, FlatList, Modal, Dimensions } from 'react-native';
+import { useNavigation } from "@react-navigation/native";
 import { Entypo } from '@expo/vector-icons';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
@@ -57,6 +58,7 @@ const postsData: Post[] = [
 ];
 
 const UserProfileWithPosts: React.FC = () => {
+    const navigation = useNavigation();
     const [modalsVisible, setModalsVisible] = useState<{ [key: string]: boolean }>({});
     const [modalPosition, setModalPosition] = useState<{ x: number; y: number } | null>(null);
     const screenWidth = Dimensions.get('window').width;
@@ -102,7 +104,7 @@ const UserProfileWithPosts: React.FC = () => {
 
         if (canEdit) {
             console.log('Editando post:', post.id);
-            // editing screen
+            navigation.navigate('EditPosts', { post });
         } else {
             Alert.alert('Edición no permitida', 'Solo puedes editar publicaciones dentro de las 24 horas.');
         }

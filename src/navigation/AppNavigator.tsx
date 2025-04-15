@@ -10,6 +10,7 @@ import ForgotPasswordThreeScreen from "../screens/forgotPasswordThreeScreen";
 import ForgotPasswordTwoScreen from "../screens/forgotPasswordTwoScreen";
 import LoginScreen from "../screens/loginScreen";
 import MyPostsUserScreen from "../screens/myPostsUserScreen";
+import EditPostsUserScreen from "../screens/editPostsUserScreen";
 import MyUser from "../screens/myUserScreen";
 import PasswordUserScreen from "../screens/passwordUserScreen";
 import PilotsUserScreen from "../screens/pilotsUserScreen";
@@ -100,6 +101,15 @@ const AppNavigator = () => {
       <Stack.Screen
         name="MyPosts"
         component={MyPostsUserScreen}
+        options={{
+          headerTitle: () => (
+            <Image source={logo} style={{ width: 120, height: 40, marginLeft: 160, resizeMode: 'contain' }} />
+          ),
+        }}
+      />
+      <Stack.Screen
+        name="EditPosts"
+        component={EditPostsUserScreen}
         options={{
           headerTitle: () => (
             <Image source={logo} style={{ width: 120, height: 40, marginLeft: 160, resizeMode: 'contain' }} />
