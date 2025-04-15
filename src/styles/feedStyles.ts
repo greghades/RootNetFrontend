@@ -88,7 +88,7 @@ export const feedStyles = StyleSheet.create({
         backgroundColor: "#111111",
         paddingVertical: 10,
         borderTopWidth: 1,
-        position: 'absolute',
+        position: 'relative',
         bottom: 0,
         left: 0,
         right: 0,

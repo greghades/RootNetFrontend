@@ -1,6 +1,8 @@
 import React from 'react';
 import { SafeAreaView, View, Image, Text } from 'react-native';
 import UserProfileWithPosts from '../components/userProfileWithPosts';
+import BottomNavBar from '../components/BottomNavBar';
+import FloatingActionButton from '../components/FloatingActionButton';
 import { styles } from '../styles/myPostsUserStyles';
 
 const ProfileScreen: React.FC = () => {
@@ -11,6 +13,11 @@ const ProfileScreen: React.FC = () => {
         handle: '@nore',
         followers: 83,
         following: 217,
+    };
+
+    const handleCreatePost = () => {
+        // Logic to create a new post (just a log for now)
+        console.log('Crear nueva publicación');
     };
 
     return (
@@ -32,7 +39,14 @@ const ProfileScreen: React.FC = () => {
                 </View>
             </View>
 
+            {/* Posts user component*/}
             <UserProfileWithPosts />
+
+            {/* floating button */}
+            <FloatingActionButton onPress={handleCreatePost} />
+
+            {/* Bottom navigation bar */}
+            <BottomNavBar />
         </SafeAreaView>
     );
 };

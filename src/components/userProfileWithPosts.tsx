@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, Image, TouchableOpacity, Alert, FlatList, Modal } from 'react-native';
+import { View, Text, Image, TouchableOpacity, Alert, FlatList, Modal, Dimensions } from 'react-native';
 import { Entypo } from '@expo/vector-icons';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
@@ -43,10 +43,44 @@ const postsData: Post[] = [
         likes: 10,
         comments: 1,
     },
+    {
+        id: '3',
+        username: 'Norelvis Peraza',
+        handle: '@nore',
+        date: 'Hace 5 días',
+        content: '¡Hola estoy en RootNet! 🎉',
+        createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+        saves: 0,
+        likes: 1,
+        comments: 0,
+    },
 ];
 
 const UserProfileWithPosts: React.FC = () => {
-    const [selectedPostId, setSelectedPostId] = useState<string | null>(null);
+    const [modalsVisible, setModalsVisible] = useState<{ [key: string]: boolean }>({});
+    const [modalPosition, setModalPosition] = useState<{ x: number; y: number } | null>(null);
+    const screenWidth = Dimensions.get('window').width;
+    const screenHeight = Dimensions.get('window').height;
+
+
+    const measurePosition = (event: any) => {
+        event.target.measure((x: number, y: number, width: number, height: number, pageX: number, pageY: number) => {
+            let adjustedX = pageX;
+            let adjustedY = pageY;
+    
+            // Prevent the modal from going off to the right
+            if (pageX + 109 > screenWidth) { // 109 is an estimated width of the modal
+                adjustedX = screenWidth - 109; 
+            }
+    
+            // Prevent the modal from popping out at the bottom
+            if (pageY + 150 > screenHeight) { // 150 is an estimated height of the modal
+                adjustedY = screenHeight - 150;
+            }
+    
+            setModalPosition({ x: adjustedX, y: adjustedY });
+        });
+    };
 
     const handleDelete = (id: string) => {
         Alert.alert('¿Eliminar publicación?', '', [
@@ -74,6 +108,14 @@ const UserProfileWithPosts: React.FC = () => {
         }
     };
 
+    const showModal = (id: string) => {
+        setModalsVisible(prev => ({ ...prev, [id]: true }));
+    };
+
+    const hideModal = (id: string) => {
+        setModalsVisible(prev => ({ ...prev, [id]: false }));
+    };
+
     const renderPost = ({ item }: { item: Post }) => (
         <View style={styles.container}>
             <View style={styles.header}>
@@ -86,7 +128,12 @@ const UserProfileWithPosts: React.FC = () => {
                     <Text style={styles.handle}>{item.handle}</Text>
                     <Text style={styles.date}>{item.date}</Text>
                 </View>
-                <TouchableOpacity onPress={() => setSelectedPostId(item.id)}>
+                <TouchableOpacity
+                    onPress={(event) => {
+                        measurePosition(event);
+                        showModal(item.id);
+                    }}
+                >
                     <Entypo name="dots-three-vertical" size={20} color={COLORS.secondaryText} />
                 </TouchableOpacity>
             </View>
@@ -97,8 +144,6 @@ const UserProfileWithPosts: React.FC = () => {
                 <Image source={{ uri: item.image }} style={styles.postImage} />
             ) : null}
 
-
-            {/* Here are the icon interactions */}
             <View style={styles.actions}>
                 <TouchableOpacity style={styles.actionButton}>
                     <FontAwesome6 name="comment-dots" size={24} color={COLORS.secondaryText} />
@@ -116,27 +161,27 @@ const UserProfileWithPosts: React.FC = () => {
 
             <View style={styles.divider} />
 
-            {/* Edit and delete modal */}
+            {/* Modal for individual options */}
             <Modal
                 transparent
-                visible={selectedPostId === item.id}
+                visible={!!modalsVisible[item.id]}
                 animationType="fade"
-                onRequestClose={() => setSelectedPostId(null)}
+                onRequestClose={() => hideModal(item.id)}
             >
-                <TouchableOpacity style={{ flex: 1 }} onPress={() => setSelectedPostId(null)}>
+                <TouchableOpacity style={{ flex: 1 }} onPress={() => hideModal(item.id)}>
                     <View style={{
                         position: 'absolute',
-                        right: 40,
-                        top: 305,
+                        left: modalPosition?.x || 0,
+                        top: modalPosition?.y || 0,
                         backgroundColor: COLORS.input,
                         borderRadius: 10,
                         padding: 10,
-                        elevation: 5,
+                        elevation: 5,                
                     }}>
-                        <TouchableOpacity onPress={() => { handleEdit(item); setSelectedPostId(null); }}>
+                        <TouchableOpacity onPress={() => { handleEdit(item); hideModal(item.id); }}>
                             <Text style={{ fontFamily: "Roboto", color: COLORS.text, paddingVertical: 8 }}>Editar</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => { handleDelete(item.id); setSelectedPostId(null); }}>
+                        <TouchableOpacity onPress={() => { handleDelete(item.id); hideModal(item.id); }}>
                             <Text style={{ fontFamily: "Roboto", color: COLORS.text, paddingVertical: 8 }}>Eliminar</Text>
                         </TouchableOpacity>
                     </View>
