@@ -13,7 +13,7 @@ const BottomNavBar: React.FC = () => {
     <View style={stylesBottomNavBar.container}>
       <TouchableOpacity 
         style={stylesBottomNavBar.navItem} 
-        onPress={() => navigation.navigate("Home")}
+        onPress={() => navigation.navigate("Feed")}
       >
         <Octicons name="home" size={24} color={COLORS.text} />
       </TouchableOpacity>

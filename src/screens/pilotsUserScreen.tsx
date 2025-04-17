@@ -1,10 +1,8 @@
 import React from "react";
-import { View, Text, ScrollView, TouchableOpacity } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { View, Text, ScrollView } from "react-native";
 import { styles } from '../styles/pilotsUserStyles';
 
-const PrivacyPolicyScreen = () => {
-    const navigation = useNavigation();
+const PilotsUserScreen = () => {
 
     return (
         <ScrollView>
@@ -54,4 +52,4 @@ const PrivacyPolicyScreen = () => {
     );
 };
 
-export default PrivacyPolicyScreen;
+export default PilotsUserScreen;

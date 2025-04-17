@@ -13,7 +13,7 @@ export const styles = StyleSheet.create({
     profileImage: {
       width: 40,
       height: 40,
-      borderRadius: 20,
+      borderRadius: 8,
       marginRight: 10,
     },
     userInfo: {
@@ -23,7 +23,6 @@ export const styles = StyleSheet.create({
       fontFamily: 'Roboto',
       fontSize: 16,
       color: COLORS.text,
-      fontWeight: 'bold',
     },
     handle: {
       fontFamily: 'Roboto',
@@ -89,7 +88,7 @@ export const feedStyles = StyleSheet.create({
         backgroundColor: "#111111",
         paddingVertical: 10,
         borderTopWidth: 1,
-        position: 'absolute',
+        position: 'relative',
         bottom: 0,
         left: 0,
         right: 0,
