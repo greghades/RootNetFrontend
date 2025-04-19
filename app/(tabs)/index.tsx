@@ -22,7 +22,6 @@ const App = () => {
   useEffect(() => {
     if (Platform.OS === 'android') {
       // Hide the navigation bar
-      NavigationBar.setVisibilityAsync('hidden');
       
       // Change the background color to black when displayed
       NavigationBar.setBackgroundColorAsync('#000000');

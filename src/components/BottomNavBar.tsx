@@ -6,6 +6,16 @@ import Octicons from '@expo/vector-icons/Octicons';
 import { COLORS } from '../styles/colors';
 import { stylesBottomNavBar } from '../styles/feedStyles';
 
+const authenticatedUser = {
+  username: 'Pixelsz',
+  handle: '@pixelsz',
+};
+
+type BottomNavBarProps = {
+  activeScreen: string;
+};
+
+
 const BottomNavBar: React.FC = () => {
   const navigation = useNavigation();
 
@@ -27,14 +37,19 @@ const BottomNavBar: React.FC = () => {
 
       <TouchableOpacity 
         style={stylesBottomNavBar.navItem} 
-        onPress={() => navigation.navigate("Bookmarks")}
+        onPress={() => navigation.navigate("Favorites")}
       >
         <Octicons name="bookmark" size={24} color={COLORS.text} />
       </TouchableOpacity>
       
       <TouchableOpacity 
         style={stylesBottomNavBar.navItem} 
-        onPress={() => navigation.navigate("MyUser")}
+        onPress={() =>
+          navigation.navigate('Profile', {
+            username: authenticatedUser.username,
+            handle: authenticatedUser.handle,
+          })
+        }
       >
         <AntDesign name="user" size={24} color={COLORS.text} />
       </TouchableOpacity>

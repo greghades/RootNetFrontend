@@ -1,6 +1,6 @@
 import { createStackNavigator } from "@react-navigation/stack";
 import React from "react";
-import { Image } from 'react-native';
+import { Image, View } from 'react-native'; // Añadimos View para centrar el logo
 import logo from "../assets/images/logo-header.png";
 import { COLORS } from "../styles/colors";
 import EditUserScreen from "../screens/editUserScreen";
@@ -11,76 +11,82 @@ import ForgotPasswordTwoScreen from "../screens/forgotPasswordTwoScreen";
 import LoginScreen from "../screens/loginScreen";
 import MyPostsUserScreen from "../screens/myPostsUserScreen";
 import EditPostsUserScreen from "../screens/editPostsUserScreen";
-import MyUser from "../screens/myUserScreen";
+import SettingsScreen from "../screens/settingsScreen";
 import PasswordUserScreen from "../screens/passwordUserScreen";
 import PilotsUserScreen from "../screens/pilotsUserScreen";
 import RegisterScreen from "../screens/registerScreen";
+import CreatePostScreen from "../screens/createPostScreen";
+import FavoritesScreen from '../screens/favoritesScreen';
+import SearchScreen from '../screens/searchScreen'; 
+import ProfileScreen from "../screens/profileScreen";
 
 const Stack = createStackNavigator();
 
 const AppNavigator = () => {
   return (
     <Stack.Navigator
-    initialRouteName="Login"
-    screenOptions={{
-      headerStyle: {
-        backgroundColor: COLORS.background,
-      },
-      headerTintColor: COLORS.text,
-      headerTitle: () => (
-        <Image
-          source={logo}
-          style={{ width: 120, height: 40, resizeMode: 'contain' }}
-        />
-      ),
-    }}
+      initialRouteName="Login"
+      screenOptions={{
+        headerStyle: {
+          backgroundColor: COLORS.background,
+        },
+        headerTintColor: COLORS.text,
+        headerTitle: () => (
+          <View style={{ flex: 1, alignItems: 'center' }}>
+            <Image
+              source={logo}
+              style={{ width: 120, height: 65, resizeMode: 'contain' }}
+            />
+          </View>
+        ),
+        headerTitleAlign: 'center', // Centrar el título (logo) en el header
+      }}
     >
       <Stack.Screen
         name="Login"
         component={LoginScreen}
         options={{
-          headerTitle: () => (
-            <Image source={logo} style={{ width: 120, height: 40, marginLeft: 200, resizeMode: 'contain' }} />
-          ),
           headerLeft: () => null,
-          gestureEnabled: false, 
+          gestureEnabled: false,
         }}
       />
       <Stack.Screen
         name="Register"
         component={RegisterScreen}
-        options={{
-          headerTitle: () => (
-            <Image source={logo} style={{ width: 120, height: 40, marginLeft: 160, resizeMode: 'contain' }} />
-          ),
-        }}
+      />
+      <Stack.Screen
+        name="Profile"
+        component={ProfileScreen}
+        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="ForgotOne"
         component={ForgotPasswordOneScreen}
-        options={{
-          headerTitle: () => (
-            <Image source={logo} style={{ width: 120, height: 40, marginLeft: 160, resizeMode: 'contain' }} />
-          ),
-        }}
       />
       <Stack.Screen
         name="ForgotTwo"
         component={ForgotPasswordTwoScreen}
+      />
+      <Stack.Screen
+        name="CreatePost"
+        component={CreatePostScreen}
         options={{
-          headerTitle: () => (
-            <Image source={logo} style={{ width: 120, height: 40, marginLeft: 160, resizeMode: 'contain' }} />
-          ),
+          headerShown: false,
         }}
+      />
+      <Stack.Screen
+        name="Favorites"
+        component={FavoritesScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Search"
+        component={SearchScreen}
+        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="ForgotThree"
         component={ForgotPasswordThreeScreen}
-        options={{
-          headerTitle: () => (
-            <Image source={logo} style={{ width: 120, height: 40, marginLeft: 160, resizeMode: 'contain' }} />
-          ),
-        }}
       />
       <Stack.Screen
         name="Feed"
@@ -90,58 +96,28 @@ const AppNavigator = () => {
         }}
       />
       <Stack.Screen
-        name="MyUser"
-        component={MyUser}
-        options={{
-          headerTitle: () => (
-            <Image source={logo} style={{ width: 120, height: 40, marginLeft: 160, resizeMode: 'contain' }} />
-          ),
-        }}
+        name="Settings"
+        component={SettingsScreen}
       />
       <Stack.Screen
         name="MyPosts"
         component={MyPostsUserScreen}
-        options={{
-          headerTitle: () => (
-            <Image source={logo} style={{ width: 120, height: 40, marginLeft: 160, resizeMode: 'contain' }} />
-          ),
-        }}
       />
       <Stack.Screen
         name="EditPosts"
         component={EditPostsUserScreen}
-        options={{
-          headerTitle: () => (
-            <Image source={logo} style={{ width: 120, height: 40, marginLeft: 160, resizeMode: 'contain' }} />
-          ),
-        }}
       />
       <Stack.Screen
         name="EditUser"
         component={EditUserScreen}
-        options={{
-          headerTitle: () => (
-            <Image source={logo} style={{ width: 120, height: 40, marginLeft: 160, resizeMode: 'contain' }} />
-          ),
-        }}
       />
       <Stack.Screen
         name="PasswordUser"
         component={PasswordUserScreen}
-        options={{
-          headerTitle: () => (
-            <Image source={logo} style={{ width: 120, height: 40, marginLeft: 160, resizeMode: 'contain' }} />
-          ),
-        }}
       />
       <Stack.Screen
         name="PilotsUser"
         component={PilotsUserScreen}
-        options={{
-          headerTitle: () => (
-            <Image source={logo} style={{ width: 120, height: 40, marginLeft: 160, resizeMode: 'contain' }} />
-          ),
-        }}
       />
     </Stack.Navigator>
   );
