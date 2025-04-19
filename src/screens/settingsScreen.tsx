@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, Image } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { styles } from '../styles/myUserStyles';
 
-const MyUserScreen = () => {
+const SettingsScreen = () => {
     const navigation = useNavigation();
 
     return (
@@ -17,10 +17,10 @@ const MyUserScreen = () => {
             />
         </View>
 
-        <TouchableOpacity style={styles.option} onPress={() => navigation.navigate("MyPosts")}>
+        {/* <TouchableOpacity style={styles.option} onPress={() => navigation.navigate("MyPosts")}>
             <Text style={styles.optionText}>Mis Publicaciones</Text>
             <Text style={styles.arrow}>›</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
 
         <TouchableOpacity style={styles.option} onPress={() => navigation.navigate("EditUser")}>
             <Text style={styles.optionText}>Editar Mi Perfil</Text>
@@ -40,4 +40,4 @@ const MyUserScreen = () => {
     );
 };
 
-export default MyUserScreen;
+export default SettingsScreen;

@@ -13,7 +13,7 @@ export const styles = StyleSheet.create({
     profileImage: {
       width: 40,
       height: 40,
-      borderRadius: 8,
+      borderRadius: 40,
       marginRight: 10,
     },
     userInfo: {
@@ -67,6 +67,106 @@ export const styles = StyleSheet.create({
       opacity: 0.2,
       marginTop: 15,
     },
+    commentsSection: {
+      marginTop: 10,
+    },
+    commentContainer: {
+      flexDirection: 'row',
+      marginBottom: 10,
+    },
+    commentProfileImage: {
+      width: 30,
+      height: 30,
+      borderRadius: 15,
+      marginRight: 10,
+    },
+    commentContent: {
+      flex: 1,
+      backgroundColor: COLORS.background,
+      borderRadius: 15,
+      padding: 10,
+    },
+    commentText: {
+      fontFamily: 'Roboto',
+      fontSize: 14,
+      color: COLORS.text,
+    },
+    noCommentsText: {
+      fontFamily: 'Roboto',
+      fontSize: 14,
+      color: COLORS.secondaryText,
+      marginBottom: 10,
+    },
+    commentInputContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginTop: 10,
+      paddingVertical: 5,
+    },
+    commentInput: {
+      flex: 1,
+      fontFamily: 'Roboto',
+      fontSize: 14,
+      color: COLORS.text,
+      backgroundColor: COLORS.background,
+      borderRadius: 20,
+      paddingHorizontal: 15,
+      paddingVertical: 8,
+      marginRight: 10,
+    },
+    submitButton: {
+      backgroundColor: COLORS.primary,
+      paddingVertical: 5,
+      paddingHorizontal: 10,
+      borderRadius: 15,
+    },
+    submitButtonText: {
+      fontFamily: 'Roboto',
+      fontSize: 14,
+      color: COLORS.text,
+    },
+    modalOverlay: {
+      flex: 1,
+      backgroundColor: 'rgba(0, 0, 0, 0.5)', // Fondo oscuro semitransparente
+      justifyContent: 'flex-end',
+    },
+    modalContainer: {
+      backgroundColor: COLORS.cardBackground,
+      margin: 20,
+      borderRadius: 10,
+      paddingVertical: 10,
+    },
+    modalOption: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      paddingVertical: 15,
+      paddingHorizontal: 20,
+    },
+    modalOptionText: {
+      fontFamily: 'Roboto',
+      fontSize: 16,
+      color: COLORS.text,
+      marginLeft: 10,
+    },
+    modalOptionTextDelete: {
+      fontFamily: 'Roboto',
+      fontSize: 16,
+      color: '#FF0000', // Texto rojo para "Eliminar Publicación"
+      marginLeft: 10,
+    },
+    modalCancelButton: {
+      paddingVertical: 15,
+      paddingHorizontal: 20,
+      borderTopWidth: 1,
+      borderTopColor: COLORS.secondaryText,
+      alignItems: 'center',
+    },
+    modalCancelText: {
+      fontFamily: 'Roboto',
+      fontSize: 16,
+      color: COLORS.text,
+      fontWeight: 'bold',
+    },
   });
 
 export const feedStyles = StyleSheet.create({
@@ -88,7 +188,7 @@ export const feedStyles = StyleSheet.create({
         backgroundColor: "#111111",
         paddingVertical: 10,
         borderTopWidth: 1,
-        position: 'relative',
+        position: 'absolute',
         bottom: 0,
         left: 0,
         right: 0,
@@ -114,4 +214,42 @@ export const feedStyles = StyleSheet.create({
       shadowOpacity: 0.3,
       shadowRadius: 3,
     },
+  });
+
+  export const stylesCommentInput = StyleSheet.create({
+    commentInputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 10,
+    paddingVertical: 5,
+  },
+  commentProfileImage: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    marginRight: 10,
+  },
+  commentInput: {
+    flex: 1,
+    fontFamily: 'Roboto',
+    fontSize: 14,
+    color: COLORS.text,
+    backgroundColor: COLORS.background,
+    borderRadius: 20,
+    paddingHorizontal: 15,
+    paddingVertical: 8,
+    marginRight: 10,
+  },
+  submitButton: {
+    backgroundColor: COLORS.primary,
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    borderRadius: 15,
+  },
+  submitButtonText: {
+    fontFamily: 'Roboto',
+    fontSize: 14,
+    color: COLORS.text,
+  },
+  
   });
