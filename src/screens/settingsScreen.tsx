@@ -36,6 +36,12 @@ const SettingsScreen = () => {
             <Text style={styles.optionText}>Políticas de privacidad</Text>
             <Text style={styles.arrow}>›</Text>
         </TouchableOpacity>
+
+        <TouchableOpacity style={styles.option} onPress={() => navigation.navigate("Login")}>
+            <Text style={styles.optionText}>Cerrar Sesión</Text>
+            <Text style={styles.arrow}>›</Text>
+        </TouchableOpacity>
+
         </View>
     );
 };

@@ -8,7 +8,7 @@ export const styles = StyleSheet.create({
   },
   header: {
     padding: 15,
-    marginTop: 25,
+    marginTop: 0, // esta la quite por un erro de pantalla en perfiles mostraba un top que no era necesario.
     backgroundColor: COLORS.cardBackground,
     position: 'relative',
   },

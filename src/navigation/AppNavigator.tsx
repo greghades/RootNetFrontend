@@ -1,7 +1,7 @@
 import { createStackNavigator } from "@react-navigation/stack";
 import React from "react";
 import { Image, View } from 'react-native'; // Añadimos View para centrar el logo
-import logo from "../assets/images/logo-header.png";
+import Logo from "../assets/images/logo-header.png";
 import { COLORS } from "../styles/colors";
 import EditUserScreen from "../screens/editUserScreen";
 import FeedScreen from "../screens/feedScreen";
@@ -34,7 +34,7 @@ const AppNavigator = () => {
         headerTitle: () => (
           <View style={{ flex: 1, alignItems: 'center' }}>
             <Image
-              source={logo}
+              source={Logo}
               style={{ width: 120, height: 65, resizeMode: 'contain' }}
             />
           </View>
@@ -118,6 +118,10 @@ const AppNavigator = () => {
       <Stack.Screen
         name="PilotsUser"
         component={PilotsUserScreen}
+      />
+      <Stack.Screen
+        name="LoginScreen"
+        component={LoginScreen}
       />
     </Stack.Navigator>
   );

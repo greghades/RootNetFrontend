@@ -151,7 +151,7 @@ export const styles = StyleSheet.create({
     modalOptionTextDelete: {
       fontFamily: 'Roboto',
       fontSize: 16,
-      color: '#FF0000', // Texto rojo para "Eliminar Publicación"
+      color: '#CE395F', // Texto rojo para "Eliminar Publicación"
       marginLeft: 10,
     },
     modalCancelButton: {
