@@ -143,7 +143,7 @@ const PostCard: React.FC<PostCardProps> = ({
           <FontAwesome6
             name="heart"
             size={24}
-            color={isLiked ? '#FF0000' : COLORS.secondaryText}
+            color={isLiked ? '#CE395F' : COLORS.secondaryText}
             solid={isLiked}
           />
           <Text style={styles.actionText}>{likes}</Text>
@@ -152,7 +152,7 @@ const PostCard: React.FC<PostCardProps> = ({
           <MaterialIcons
             name={isSaved ? 'bookmark' : 'bookmark-border'}
             size={24}
-            color={isSaved ? COLORS.accent : COLORS.secondaryText}
+            color={isSaved ? COLORS.text : COLORS.secondaryText}
           />
           <Text style={styles.actionText}>{saves}</Text>
         </TouchableOpacity>
@@ -218,7 +218,7 @@ const PostCard: React.FC<PostCardProps> = ({
                   style={styles.modalOption}
                   onPress={() => handleModalAction('delete')}
                 >
-                  <MaterialIcons name="delete" size={24} color="#FF0000" />
+                  <MaterialIcons name="delete" size={24} color="#CE395F" />
                   <Text style={styles.modalOptionTextDelete}>Eliminar Publicación</Text>
                 </TouchableOpacity>
                 <TouchableOpacity

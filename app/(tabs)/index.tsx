@@ -34,7 +34,7 @@ const App = () => {
     }
   }, []);
 
-  // Carry
+  // Carry 
   if (!fontLoaded) {
     return (
       <View

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { View, TextInput, TouchableOpacity, Text, StyleSheet, Image, Keyboard, Animated, Platform } from 'react-native';
+import { View, TextInput, TouchableOpacity, Text, StyleSheet, Image, Keyboard, Animated, Platform} from 'react-native';
+import * as ImagePicker from 'expo-image-picker';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { COLORS } from '../styles/colors';
 import { AntDesign } from '@expo/vector-icons';
@@ -9,6 +10,7 @@ const CreatePostScreen = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const [postContent, setPostContent] = useState('');
+  const [selectedImage, setSelectedImage] = useState(null); // NUEVO estado para la imagen
   const [keyboardHeight, setKeyboardHeight] = useState(0);
   const { addPost } = route.params || {};
 
@@ -45,6 +47,26 @@ const CreatePostScreen = () => {
     };
   }, []);
 
+  // FUNCIÓN para abrir galería
+  const handleImagePick = async () => {
+    const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+    if (!permissionResult.granted) {
+      alert('Se necesita permiso para acceder a la galería.');
+      return;
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      quality: 1,
+    });
+
+    if (!result.canceled && result.assets?.length > 0) {
+      setSelectedImage(result.assets[0].uri);
+    }
+  };
+
   const handlePublish = () => {
     if (postContent.trim()) {
       const newPost = {
@@ -53,11 +75,11 @@ const CreatePostScreen = () => {
         handle: '@usuarioactual',
         date: new Date().toLocaleDateString(),
         content: postContent,
-        image: null,
+        image: selectedImage || null, // INCLUYE la imagen seleccionada
         saves: 0,
         likes: 0,
         comments: 0,
-        commentsList: [], // Nuevo campo para los comentarios
+        commentsList: [],
         isSaved: false,
         isLiked: false,
       };
@@ -68,6 +90,7 @@ const CreatePostScreen = () => {
 
       navigation.goBack();
       setPostContent('');
+      setSelectedImage(null);
     }
   };
 
@@ -106,6 +129,34 @@ const CreatePostScreen = () => {
         />
       </View>
 
+            {/* PREVISUALIZACIÓN DE IMAGEN */}
+                 {selectedImage && (
+  <View style={{ position: 'relative', alignSelf: 'center', marginVertical: 10 }}>
+    <Image
+      source={{ uri: selectedImage }}
+      style={{
+        width: '100%',
+        height: 200,
+        borderRadius: 10,
+      }}
+      resizeMode="cover"
+    />
+    <TouchableOpacity
+      onPress={() => setSelectedImage(null)}
+      style={{
+        position: 'absolute',
+        top: 10,
+        right: 10,
+        backgroundColor: 'rgba(0,0,0,0.6)',
+        borderRadius: 20,
+        padding: 5,
+      }}
+    >
+      <AntDesign name="close" size={20} color="#fff" />
+    </TouchableOpacity>
+  </View>
+)}
+
       <Animated.View
         style={[
           styles.bottomBar,
@@ -114,7 +165,7 @@ const CreatePostScreen = () => {
           },
         ]}
       >
-        <TouchableOpacity style={styles.iconButton}>
+        <TouchableOpacity style={styles.iconButton} onPress={handleImagePick}>
           <AntDesign name="picture" size={24} color={COLORS.text} />
         </TouchableOpacity>
         <TouchableOpacity style={styles.iconButton}>
