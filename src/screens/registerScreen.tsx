@@ -6,6 +6,7 @@ import InputField from '../components/InputField';
 import PasswordInput from '../components/PasswordInput';
 import Button from '../components/Button';
 import ButtonContainer from '../components/ButtonContainer';
+import { URL_API } from '../config/constante';
 
 interface Errors {
   nombre?: string;
@@ -15,6 +16,16 @@ interface Errors {
   correo?: string;
   contrasena?: string;
   confirmarContrasena?: string;
+}
+
+interface ApiResponse {
+  user?: {
+    username: string;
+    email: string;
+    first_name: string;
+    last_name: string;
+  };
+  message: string;
 }
 
 const RegisterScreen: React.FC = () => {
@@ -48,9 +59,9 @@ const RegisterScreen: React.FC = () => {
       newErrors.apellido = 'El apellido solo debe contener letras.';
     }
 
-    if (!form.direccion) {
+    /*if (!form.direccion) {
       newErrors.direccion = 'La dirección es requerida.';
-    }
+    }*/
 
     if (!form.usuario) {
       newErrors.usuario = 'El usuario es requerido.';
@@ -75,23 +86,74 @@ const RegisterScreen: React.FC = () => {
     } else if (form.contrasena !== form.confirmarContrasena) {
       newErrors.confirmarContrasena = 'Las contraseñas no coinciden.';
     }
-
+    console.log(newErrors);
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleRegister = () => {
-    if (validate()) {
+  const handleRegister = async (): Promise<void>  => {
+    console.log("dasddasa");
+    console.log(validate());
+    if (!validate()) return;
+    console.log("pr");
+
+    try {
+      console.log("1");
+      console.log(URL_API);
+      const response = await fetch(URL_API + "api/v1/auth/signup/", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id: "", // Según tu endpoint, parece que el id puede ir vacío
+          email: form.correo,
+          password: form.contrasena,
+          first_name: form.nombre,
+          last_name: form.apellido
+        }),
+      });
+
+      const data: ApiResponse = await response.json();
+
+      if (!response.ok) {
+        // Manejar errores del API
+        let errorMessage = 'Error en el registro';
+        if (data.message) {
+          errorMessage = data.message;
+        } else if (response.status === 400) {
+          errorMessage = 'Datos inválidos';
+        } else if (response.status === 409) {
+          errorMessage = 'El correo ya está registrado';
+        }
+        Alert.alert(
+          "Error",
+          errorMessage
+        );
+        return
+      }
+
+      // Registro exitoso
       Alert.alert(
         "Registro exitoso",
-        "Ya puedes iniciar sesión con Rootnet.",
-          [
-            { text: "Aceptar", onPress: () => navigation.navigate("Login") }
-          ]
+        data.message || "Ya puedes iniciar sesión con Rootnet.",
+        [
+          { text: "Aceptar", onPress: () => navigation.navigate("Login") }
+        ]
       );
-      console.log("Registro completado", form);
+      console.log("Registro completado", data);
+
+    } catch (error) {
+      console.error("Error en el registro:", error);
+      const errorMessage = error instanceof Error ? error.message : "Ocurrió un error al registrar. Por favor intenta nuevamente.";
+      Alert.alert(
+        "Error",
+        errorMessage
+      );
+    } finally {
     }
   };
+
 
   return (
     <ScrollView contentContainerStyle={styles.scrollContainer}>
