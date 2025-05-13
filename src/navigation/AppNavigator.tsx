@@ -119,10 +119,7 @@ const AppNavigator = () => {
         name="PilotsUser"
         component={PilotsUserScreen}
       />
-      <Stack.Screen
-        name="LoginScreen"
-        component={LoginScreen}
-      />
+    
     </Stack.Navigator>
   );
 };
