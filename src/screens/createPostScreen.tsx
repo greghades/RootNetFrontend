@@ -129,13 +129,13 @@ const CreatePostScreen = () => {
         />
       </View>
 
-            {/* PREVISUALIZACIÓN DE IMAGEN */}
-                 {selectedImage && (
+      {/*//cargar imagen*/}
+{typeof selectedImage === 'string' && selectedImage.trim() !== '' && (
   <View style={{ position: 'relative', alignSelf: 'center', marginVertical: 10 }}>
     <Image
       source={{ uri: selectedImage }}
       style={{
-        width: '100%',
+        width: 300,
         height: 200,
         borderRadius: 10,
       }}
@@ -156,7 +156,7 @@ const CreatePostScreen = () => {
     </TouchableOpacity>
   </View>
 )}
-
+     
       <Animated.View
         style={[
           styles.bottomBar,
