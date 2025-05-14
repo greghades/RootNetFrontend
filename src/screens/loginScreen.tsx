@@ -71,7 +71,7 @@ const LoginScreen = () => {
       });
 
       const data: LoginResponse = await response.json();
-
+      
       if (!response.ok) {
         let errorMessage = 'Error en el inicio de sesión';
         if (data.message?.Message) {
@@ -88,6 +88,9 @@ const LoginScreen = () => {
       
       // Guardar información del usuario si es necesario
       await AsyncStorage.setItem('userData', JSON.stringify(data.user));
+
+      const obt = await AsyncStorage.getItem('userToken')
+      console.log("obt", obt)
 
       // Navegar al feed después de login exitoso
       navigation.navigate("Feed");

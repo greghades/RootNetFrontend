@@ -59,10 +59,6 @@ const RegisterScreen: React.FC = () => {
       newErrors.apellido = 'El apellido solo debe contener letras.';
     }
 
-    /*if (!form.direccion) {
-      newErrors.direccion = 'La dirección es requerida.';
-    }*/
-
     if (!form.usuario) {
       newErrors.usuario = 'El usuario es requerido.';
     } else if (!/^@[\w\d]+$/.test(form.usuario)) {
@@ -86,27 +82,23 @@ const RegisterScreen: React.FC = () => {
     } else if (form.contrasena !== form.confirmarContrasena) {
       newErrors.confirmarContrasena = 'Las contraseñas no coinciden.';
     }
-    console.log(newErrors);
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const handleRegister = async (): Promise<void>  => {
-    console.log("dasddasa");
-    console.log(validate());
     if (!validate()) return;
-    console.log("pr");
 
     try {
-      console.log("1");
-      console.log(URL_API);
       const response = await fetch(URL_API + "api/v1/auth/signup/", {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          id: "", // Según tu endpoint, parece que el id puede ir vacío
+          id: "",
+          username: form.usuario,
           email: form.correo,
           password: form.contrasena,
           first_name: form.nombre,
@@ -117,7 +109,6 @@ const RegisterScreen: React.FC = () => {
       const data: ApiResponse = await response.json();
 
       if (!response.ok) {
-        // Manejar errores del API
         let errorMessage = 'Error en el registro';
         if (data.message) {
           errorMessage = data.message;
@@ -133,7 +124,6 @@ const RegisterScreen: React.FC = () => {
         return
       }
 
-      // Registro exitoso
       Alert.alert(
         "Registro exitoso",
         data.message || "Ya puedes iniciar sesión con Rootnet.",

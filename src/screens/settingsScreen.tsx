@@ -1,23 +1,66 @@
-import React from "react";
-import { View, Text, TouchableOpacity, Image } from "react-native";
+import React, { useState, useEffect } from 'react';
+import { View, Text, TouchableOpacity, Image, Alert } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { CommonActions } from "@react-navigation/native";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { styles } from '../styles/myUserStyles';
+import { getToken, URL_API } from '../config/constante';
 
 const SettingsScreen = () => {
     const navigation = useNavigation();
+    const [token, setToken] = useState<string | null>(null);
 
-     const handleLogout = () => {
-        // 1. Aquí va tu lógica de limpieza (token, AsyncStorage, Redux, etc.)
-        // Ejemplo:
-        // await AsyncStorage.clear();
+    useEffect(() => {
+        const fetchToken = async () => {
+        const storedToken = await getToken();
+        setToken(storedToken);
+        };
+        
+        fetchToken();
+    }, []);
 
-        // 2. Resetear la pila de navegación
+    const handleLogout = async (): Promise<void> => {
+        console.log("token", token)
+        try {
+        const response = await fetch(`${URL_API}api/v1/auth/logout/`, {
+            method: 'POST',
+            headers: {
+            'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+            Token: token,
+            }),
+        });
+
+        if (!response.ok) {
+            let errorMessage = 'Error al cerrar sesión';
+            Alert.alert("Error", errorMessage);
+            return;
+        }
+
+        await AsyncStorage.removeItem('userToken');
+        await AsyncStorage.removeItem('userData');
+        
+        // Navegar al login después de cerrar
+        navigation.navigate("Login");
+
+        } catch (error) {
+        console.error("Error al cerrar sesión:", error);
+        let errorMessage = "Ocurrió un error al cerrar sesión";
+        
+        if (error instanceof Error) {
+            errorMessage = error.message;
+        }
+        Alert.alert("Error", errorMessage);      
+        
+    } finally {
+    }
+
         navigation.dispatch(
             CommonActions.reset({
                 index: 0,
                 routes: [
-                    { name:("Login") } // Reemplaza 'Login' con el nombre exacto de tu pantalla
+                    { name:("Login") }
                 ],
             })
         );
