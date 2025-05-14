@@ -129,7 +129,7 @@ const CreatePostScreen = () => {
         />
       </View>
 
-      {/*//cargar imagen*/}
+      {/*cargar imagen*/}
 {typeof selectedImage === 'string' && selectedImage.trim() !== '' && (
   <View style={{ position: 'relative', alignSelf: 'center', marginVertical: 10 }}>
     <Image
