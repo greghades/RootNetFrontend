@@ -128,14 +128,12 @@ const CreatePostScreen = () => {
           autoFocus
         />
       </View>
-
-            {/* PREVISUALIZACIÓN DE IMAGEN */}
-                 {selectedImage && (
+{typeof selectedImage === 'string' && selectedImage.trim() !== '' && (
   <View style={{ position: 'relative', alignSelf: 'center', marginVertical: 10 }}>
     <Image
       source={{ uri: selectedImage }}
       style={{
-        width: '100%',
+        width: 300,
         height: 200,
         borderRadius: 10,
       }}
@@ -156,7 +154,7 @@ const CreatePostScreen = () => {
     </TouchableOpacity>
   </View>
 )}
-
+     
       <Animated.View
         style={[
           styles.bottomBar,
@@ -167,9 +165,6 @@ const CreatePostScreen = () => {
       >
         <TouchableOpacity style={styles.iconButton} onPress={handleImagePick}>
           <AntDesign name="picture" size={24} color={COLORS.text} />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.iconButton}>
-          <AntDesign name="smileo" size={24} color={COLORS.text} />
         </TouchableOpacity>
         <TouchableOpacity style={styles.iconButton}>
           <AntDesign name="link" size={24} color={COLORS.text} />
