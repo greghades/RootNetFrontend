@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
-import { View, Text, TextInput, TouchableOpacity } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, Alert } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import { styles } from '../styles/loginStyles';
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import { URL_API } from "../config/constante";
 
 const LoginScreen = () => {
   const navigation = useNavigation();
@@ -18,6 +20,20 @@ const LoginScreen = () => {
     contrasena?: string;
   }
   
+  interface LoginResponse {
+    Token: string;
+    user: {
+      id: number;
+      username: string;
+      email: string;
+      first_name: string;
+      last_name: string;
+    };
+    message: {
+      Message: string;
+    };
+  }
+
   const validate = (): boolean => {
     let newErrors: Errors = {};
     // validate email
@@ -36,6 +52,60 @@ const LoginScreen = () => {
 
     setErrors(newErrors);
       return Object.keys(newErrors).length === 0;
+  };
+
+  const handleLogin = async (): Promise<void> => {
+    if (!validate()) return;
+    
+    
+    try {
+      const response = await fetch(`${URL_API}api/v1/auth/login/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: form.correo,
+          password: form.contrasena
+        }),
+      });
+
+      const data: LoginResponse = await response.json();
+      
+      if (!response.ok) {
+        let errorMessage = 'Error en el inicio de sesión';
+        if (data.message?.Message) {
+          errorMessage = data.message.Message;
+        } else if (response.status === 401) {
+          errorMessage = 'Credenciales inválidas';
+        }
+        Alert.alert("Error", errorMessage);
+        return;
+      }
+
+      // Guardar el token en AsyncStorage
+      await AsyncStorage.setItem('userToken', data.Token);
+      
+      // Guardar información del usuario si es necesario
+      await AsyncStorage.setItem('userData', JSON.stringify(data.user));
+
+      const obt = await AsyncStorage.getItem('userToken')
+      console.log("obt", obt)
+
+      // Navegar al feed después de login exitoso
+      navigation.navigate("Feed");
+
+    } catch (error) {
+      console.error("Error en el login:", error);
+      let errorMessage = "Ocurrió un error al iniciar sesión";
+      
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      Alert.alert("Error", errorMessage);      
+      
+    } finally {
+    }
   };
 
   return (
@@ -87,12 +157,7 @@ const LoginScreen = () => {
           <Text style={styles.forgotText}>¡Olvide mi contraseña!</Text>
         </TouchableOpacity>
       </View>
-      <TouchableOpacity style={styles.loginButton} onPress={() => {
-          if (validate()) {
-            navigation.navigate("Feed");
-          }
-        }}
-      >
+      <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
         <Text style={styles.loginText}>Acceso</Text>
       </TouchableOpacity>
     </View>

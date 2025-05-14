@@ -6,6 +6,7 @@ import InputField from '../components/InputField';
 import PasswordInput from '../components/PasswordInput';
 import Button from '../components/Button';
 import ButtonContainer from '../components/ButtonContainer';
+import { URL_API } from '../config/constante';
 
 interface Errors {
   nombre?: string;
@@ -15,6 +16,16 @@ interface Errors {
   correo?: string;
   contrasena?: string;
   confirmarContrasena?: string;
+}
+
+interface ApiResponse {
+  user?: {
+    username: string;
+    email: string;
+    first_name: string;
+    last_name: string;
+  };
+  message: string;
 }
 
 const RegisterScreen: React.FC = () => {
@@ -48,10 +59,6 @@ const RegisterScreen: React.FC = () => {
       newErrors.apellido = 'El apellido solo debe contener letras.';
     }
 
-    if (!form.direccion) {
-      newErrors.direccion = 'La dirección es requerida.';
-    }
-
     if (!form.usuario) {
       newErrors.usuario = 'El usuario es requerido.';
     } else if (!/^@[\w\d]+$/.test(form.usuario)) {
@@ -80,18 +87,63 @@ const RegisterScreen: React.FC = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleRegister = () => {
-    if (validate()) {
+  const handleRegister = async (): Promise<void>  => {
+    if (!validate()) return;
+
+    try {
+      const response = await fetch(URL_API + "api/v1/auth/signup/", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id: "",
+          username: form.usuario,
+          email: form.correo,
+          password: form.contrasena,
+          first_name: form.nombre,
+          last_name: form.apellido
+        }),
+      });
+
+      const data: ApiResponse = await response.json();
+
+      if (!response.ok) {
+        let errorMessage = 'Error en el registro';
+        if (data.message) {
+          errorMessage = data.message;
+        } else if (response.status === 400) {
+          errorMessage = 'Datos inválidos';
+        } else if (response.status === 409) {
+          errorMessage = 'El correo ya está registrado';
+        }
+        Alert.alert(
+          "Error",
+          errorMessage
+        );
+        return
+      }
+
       Alert.alert(
         "Registro exitoso",
-        "Ya puedes iniciar sesión con Rootnet.",
-          [
-            { text: "Aceptar", onPress: () => navigation.navigate("Login") }
-          ]
+        data.message || "Ya puedes iniciar sesión con Rootnet.",
+        [
+          { text: "Aceptar", onPress: () => navigation.navigate("Login") }
+        ]
       );
-      console.log("Registro completado", form);
+      console.log("Registro completado", data);
+
+    } catch (error) {
+      console.error("Error en el registro:", error);
+      const errorMessage = error instanceof Error ? error.message : "Ocurrió un error al registrar. Por favor intenta nuevamente.";
+      Alert.alert(
+        "Error",
+        errorMessage
+      );
+    } finally {
     }
   };
+
 
   return (
     <ScrollView contentContainerStyle={styles.scrollContainer}>
