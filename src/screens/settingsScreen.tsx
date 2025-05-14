@@ -1,10 +1,27 @@
 import React from "react";
 import { View, Text, TouchableOpacity, Image } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { CommonActions } from "@react-navigation/native";
 import { styles } from '../styles/myUserStyles';
 
 const SettingsScreen = () => {
     const navigation = useNavigation();
+
+     const handleLogout = () => {
+        // 1. Aquí va tu lógica de limpieza (token, AsyncStorage, Redux, etc.)
+        // Ejemplo:
+        // await AsyncStorage.clear();
+
+        // 2. Resetear la pila de navegación
+        navigation.dispatch(
+            CommonActions.reset({
+                index: 0,
+                routes: [
+                    { name:("Login") } // Reemplaza 'Login' con el nombre exacto de tu pantalla
+                ],
+            })
+        );
+    };
 
     return (
         <View style={styles.container}>
@@ -36,6 +53,12 @@ const SettingsScreen = () => {
             <Text style={styles.optionText}>Políticas de privacidad</Text>
             <Text style={styles.arrow}>›</Text>
         </TouchableOpacity>
+
+        <TouchableOpacity style={styles.option} onPress={handleLogout}>
+            <Text style={styles.optionText}>Cerrar Sesión</Text>
+            <Text style={styles.arrow}>›</Text>
+        </TouchableOpacity>
+
         </View>
     );
 };

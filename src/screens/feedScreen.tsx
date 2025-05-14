@@ -51,7 +51,7 @@ const FeedScreen: React.FC = () => {
             {
               id: '3',
               username: 'Maximillian',
-              handle: '@maxjacobson',
+              handle: '@pixelsz',
               date: '3h',
               content: "Y'ALL ready for this next post?",
               saves: 46,
