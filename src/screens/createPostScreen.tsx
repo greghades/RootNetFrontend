@@ -128,6 +128,8 @@ const CreatePostScreen = () => {
           autoFocus
         />
       </View>
+
+      {/*//cargar imagen*/}
 {typeof selectedImage === 'string' && selectedImage.trim() !== '' && (
   <View style={{ position: 'relative', alignSelf: 'center', marginVertical: 10 }}>
     <Image
@@ -165,6 +167,9 @@ const CreatePostScreen = () => {
       >
         <TouchableOpacity style={styles.iconButton} onPress={handleImagePick}>
           <AntDesign name="picture" size={24} color={COLORS.text} />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.iconButton}>
+          <AntDesign name="smileo" size={24} color={COLORS.text} />
         </TouchableOpacity>
         <TouchableOpacity style={styles.iconButton}>
           <AntDesign name="link" size={24} color={COLORS.text} />
