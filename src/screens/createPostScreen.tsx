@@ -1,23 +1,31 @@
 import React, { useState, useEffect } from 'react';
-import { View, TextInput, TouchableOpacity, Text, StyleSheet, Image, Keyboard, Animated, Platform} from 'react-native';
+import {
+  View, TextInput, TouchableOpacity, Text,
+  Image, KeyboardAvoidingView, Platform,
+  ScrollView, Keyboard, Animated, Alert
+} from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { COLORS } from '../styles/colors';
 import { AntDesign } from '@expo/vector-icons';
+import { COLORS } from '../styles/colors';
 import { styles } from '../styles/createPostStyles';
+import { getToken, getUserData, URL_API, UserDataResponse } from '../config/constante';
+
 
 const CreatePostScreen = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const [postContent, setPostContent] = useState('');
-  const [selectedImage, setSelectedImage] = useState(null); // NUEVO estado para la imagen
-  const [keyboardHeight, setKeyboardHeight] = useState(0);
+  const [selectedImage, setSelectedImage] = useState(null);
   const { addPost } = route.params || {};
+  const [token, setToken] = useState<string | null>(null);
+  const [userData, setUserData] = useState< UserDataResponse | null>(null);
 
+  const [keyboardHeight, setKeyboardHeight] = useState(0);
   const bottomBarPosition = new Animated.Value(0);
 
   useEffect(() => {
-    const keyboardDidShowListener = Keyboard.addListener(
+    const showListener = Keyboard.addListener(
       Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow',
       (e) => {
         setKeyboardHeight(e.endCoordinates.height);
@@ -29,7 +37,7 @@ const CreatePostScreen = () => {
       }
     );
 
-    const keyboardDidHideListener = Keyboard.addListener(
+    const hideListener = Keyboard.addListener(
       Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide',
       () => {
         setKeyboardHeight(0);
@@ -41,17 +49,29 @@ const CreatePostScreen = () => {
       }
     );
 
+    const fetchToken = async () => {
+      const storedToken = await getToken();
+        setToken(storedToken);
+        };
+      
+      fetchToken();
+
+    const fetchUserData = async () => {
+      const storedUserData = await getUserData();
+        setUserData(storedUserData);
+        };
+      
+      fetchUserData();
+
     return () => {
-      keyboardDidShowListener.remove();
-      keyboardDidHideListener.remove();
+      showListener.remove();
+      hideListener.remove();
     };
   }, []);
 
-  // FUNCIÓN para abrir galería
   const handleImagePick = async () => {
-    const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
-
-    if (!permissionResult.granted) {
+    const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (!permission.granted) {
       alert('Se necesita permiso para acceder a la galería.');
       return;
     }
@@ -67,115 +87,139 @@ const CreatePostScreen = () => {
     }
   };
 
-  const handlePublish = () => {
-    if (postContent.trim()) {
-      const newPost = {
-        id: Date.now().toString(),
-        username: 'Usuario Actual',
-        handle: '@usuarioactual',
-        date: new Date().toLocaleDateString(),
-        content: postContent,
-        image: selectedImage || null, // INCLUYE la imagen seleccionada
-        saves: 0,
-        likes: 0,
-        comments: 0,
-        commentsList: [],
-        isSaved: false,
-        isLiked: false,
-      };
+  const handlePublish = async () => {
+    if (!postContent.trim()) return;
 
-      if (addPost) {
-        addPost(newPost);
+    try {
+      const formData = new FormData();
+      formData.append('content', postContent);
+      formData.append("title", "null");
+      formData.append("author", userData?.username);
+
+      if (selectedImage) {
+        const uriParts = selectedImage.split('.');
+        const fileType = uriParts[uriParts.length - 1];
+
+        formData.append('image', {
+          uri: selectedImage,
+          name: `photo.${fileType}`,
+          type: `image/${fileType}`,
+        });
+      } else {
+        formData.append('image', null);
       }
 
+      console.log(userData)
+      const response = await fetch(`${URL_API}api/v1/posts/create/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          'Authorization': `Token ${token}`,
+        },
+        body: formData,
+      });
+      const data = await response.json();
+      
+      if (!response.ok) {
+        console.log(data)
+        throw new Error('Error al crear el post');
+      }
+
+      Alert.alert('Éxito', 'Post publicado correctamente');
+      if (addPost) addPost(data);
       navigation.goBack();
       setPostContent('');
       setSelectedImage(null);
+    } catch (error) {
+      console.error('Error publicando el post:', error);
+      Alert.alert('Error', 'No se pudo publicar el post');
     }
   };
 
-  const handleCancel = () => {
-    navigation.goBack();
-  };
+  const handleCancel = () => navigation.goBack();
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity onPress={handleCancel}>
-          <Text style={styles.cancelButton}>Cancelar</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={handlePublish}
-          disabled={!postContent.trim()}
-          style={[styles.publishButton, { opacity: postContent.trim() ? 1 : 0.5 }]}
-        >
-          <Text style={styles.publishButtonText}>Publicar</Text>
-        </TouchableOpacity>
-      </View>
-
-      <View style={[styles.inputContainer, { paddingBottom: keyboardHeight }]}>
-        <Image
-          source={require('../assets/images/default-profile.jpg')}
-          style={styles.profileImage}
-        />
-        <TextInput
-          style={styles.textInput}
-          placeholder="¿Qué quieres compartir?"
-          placeholderTextColor={COLORS.secondaryText}
-          value={postContent}
-          onChangeText={setPostContent}
-          multiline
-          autoFocus
-        />
-      </View>
-
-            {/* PREVISUALIZACIÓN DE IMAGEN */}
-                 {selectedImage && (
-  <View style={{ position: 'relative', alignSelf: 'center', marginVertical: 10 }}>
-    <Image
-      source={{ uri: selectedImage }}
-      style={{
-        width: '100%',
-        height: 200,
-        borderRadius: 10,
-      }}
-      resizeMode="cover"
-    />
-    <TouchableOpacity
-      onPress={() => setSelectedImage(null)}
-      style={{
-        position: 'absolute',
-        top: 10,
-        right: 10,
-        backgroundColor: 'rgba(0,0,0,0.6)',
-        borderRadius: 20,
-        padding: 5,
-      }}
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
-      <AntDesign name="close" size={20} color="#fff" />
-    </TouchableOpacity>
-  </View>
-)}
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <TouchableOpacity onPress={handleCancel}>
+            <Text style={styles.cancelButton}>Cancelar</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={handlePublish}
+            disabled={!postContent.trim()}
+            style={[styles.publishButton, { opacity: postContent.trim() ? 1 : 0.5 }]}
+          >
+            <Text style={styles.publishButtonText}>Publicar</Text>
+          </TouchableOpacity>
+        </View>
 
-      <Animated.View
-        style={[
-          styles.bottomBar,
-          {
-            bottom: bottomBarPosition,
-          },
-        ]}
-      >
-        <TouchableOpacity style={styles.iconButton} onPress={handleImagePick}>
-          <AntDesign name="picture" size={24} color={COLORS.text} />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.iconButton}>
-          <AntDesign name="smileo" size={24} color={COLORS.text} />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.iconButton}>
-          <AntDesign name="link" size={24} color={COLORS.text} />
-        </TouchableOpacity>
-      </Animated.View>
-    </View>
+        <ScrollView
+          style={{ flex: 1 }}
+          keyboardShouldPersistTaps="handled"
+          contentContainerStyle={{ paddingBottom: 100 }}
+        >
+          <View style={styles.inputContainer}>
+            <Image
+              source={require('../assets/images/default-profile.jpg')}
+              style={styles.profileImage}
+            />
+            <TextInput
+              style={styles.textInput}
+              placeholder="¿Qué quieres compartir?"
+              placeholderTextColor={COLORS.secondaryText}
+              value={postContent}
+              onChangeText={setPostContent}
+              multiline
+              autoFocus
+            />
+          </View>
+
+          {selectedImage && (
+            <View style={{ position: 'relative', marginVertical: 10, alignItems: 'center' }}>
+              <Image
+                source={{ uri: selectedImage }}
+                style={{
+                  width: '90%',
+                  height: 200,
+                  borderRadius: 10,
+                }}
+                resizeMode="cover"
+              />
+              <TouchableOpacity
+                onPress={() => setSelectedImage(null)}
+                style={{
+                  position: 'absolute',
+                  top: 10,
+                  right: 20,
+                  backgroundColor: 'rgba(0,0,0,0.6)',
+                  borderRadius: 20,
+                  padding: 5,
+                }}
+              >
+                <AntDesign name="close" size={20} color="#fff" />
+              </TouchableOpacity>
+            </View>
+          )}
+        </ScrollView>
+
+        <Animated.View
+          style={[
+            styles.bottomBar,
+            {
+              bottom: bottomBarPosition,
+            },
+          ]}
+        >
+          <TouchableOpacity style={styles.iconButton} onPress={handleImagePick}>
+            <AntDesign name="picture" size={24} color={COLORS.text} />
+          </TouchableOpacity>
+        </Animated.View>
+      </View>
+    </KeyboardAvoidingView>
   );
 };
 
