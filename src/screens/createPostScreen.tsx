@@ -114,7 +114,7 @@ const CreatePostScreen = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'multipart/form-data',
-          'Authorization': `Token ${token}`,
+          'Authorization': `Bearer ${token}`,
         },
         body: formData,
       });
