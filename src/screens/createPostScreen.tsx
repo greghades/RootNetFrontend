@@ -110,7 +110,7 @@ const CreatePostScreen = () => {
       }
 
       console.log(userData)
-      const response = await fetch(`${URL_API}api/v1/posts/create/`, {
+      const response = await fetch(`${URL_API}/api/v1/posts/create/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'multipart/form-data',

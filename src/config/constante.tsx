@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-export const URL_API = "https://a7e2-66-232-126-52.ngrok-free.app/";
+export const URL_API = "https://a7e2-66-232-126-52.ngrok-free.app";
 
 export interface UserDataResponse {
     id: number;
@@ -7,6 +7,18 @@ export interface UserDataResponse {
     email: string;
     first_name: string;
     last_name: string;
+}
+
+export interface PostResponse {
+    id: number;
+    author: string;
+    created_at: string;
+    updated_at: string;
+    image: string;
+    content: string;
+    tag: [number];
+    created_date: string;
+    created_time: string;
 }
 
 export const getToken = async () => {

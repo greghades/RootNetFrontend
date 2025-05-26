@@ -91,7 +91,7 @@ const RegisterScreen: React.FC = () => {
     if (!validate()) return;
 
     try {
-      const response = await fetch(URL_API + "api/v1/auth/signup/", {
+      const response = await fetch(URL_API + "/api/v1/auth/signup/", {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

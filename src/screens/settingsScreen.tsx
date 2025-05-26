@@ -30,7 +30,7 @@ const SettingsScreen = () => {
     const handleLogout = async (): Promise<void> => {
         console.log("token", token)
         try {
-        const response = await fetch(`${URL_API}api/v1/auth/logout/`, {
+        const response = await fetch(`${URL_API}/api/v1/auth/logout/`, {
             method: 'POST',
             headers: {
             'Content-Type': 'application/json',
