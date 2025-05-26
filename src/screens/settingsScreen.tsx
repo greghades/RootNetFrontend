@@ -4,11 +4,12 @@ import { useNavigation } from "@react-navigation/native";
 import { CommonActions } from "@react-navigation/native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { styles } from '../styles/myUserStyles';
-import { getToken, URL_API } from '../config/constante';
+import { getRefreshToken, getToken, URL_API } from '../config/constante';
 
 const SettingsScreen = () => {
     const navigation = useNavigation();
     const [token, setToken] = useState<string | null>(null);
+    const [refresh, setRefresh] = useState<string | null>(null);
 
     useEffect(() => {
         const fetchToken = async () => {
@@ -17,6 +18,13 @@ const SettingsScreen = () => {
         };
         
         fetchToken();
+
+        const refreshToken = async () => {
+        const storedToken = await getRefreshToken();
+        setRefresh(storedToken);
+        };
+        
+        refreshToken();
     }, []);
 
     const handleLogout = async (): Promise<void> => {
@@ -26,9 +34,10 @@ const SettingsScreen = () => {
             method: 'POST',
             headers: {
             'Content-Type': 'application/json',
+            'Authorization': 'Bearer '+token,
             },
             body: JSON.stringify({
-            Token: token,
+            refresh: refresh,
             }),
         });
 

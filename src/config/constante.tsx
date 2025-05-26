@@ -11,10 +11,20 @@ export interface UserDataResponse {
 
 export const getToken = async () => {
     try {
-        const token = await AsyncStorage.getItem('userToken');
+        const token = await AsyncStorage.getItem('accessToken');
         return token;
     } catch (error) {
         console.error('Error al obtener el token:', error);
+        return null;
+    }
+};
+
+export const getRefreshToken = async () => {
+    try {
+        const refreshToken = await AsyncStorage.getItem('refreshToken');
+        return refreshToken;
+    } catch (error) {
+        console.error('Error al obtener el token refresh:', error);
         return null;
     }
 };
