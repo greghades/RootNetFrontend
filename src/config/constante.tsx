@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-export const URL_API = "https://f950-66-232-126-116.ngrok-free.app/";
+export const URL_API = "https://a7e2-66-232-126-52.ngrok-free.app/";
 
 export interface UserDataResponse {
     id: number;
