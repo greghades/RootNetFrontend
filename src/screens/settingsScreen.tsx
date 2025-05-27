@@ -12,14 +12,14 @@ const SettingsScreen = () => {
     const [refresh, setRefresh] = useState<string | null>(null);
 
     useEffect(() => {
-        const fetchToken = async () => {
+        const fetchToken = async (): Promise<void> => {
         const storedToken = await getToken();
         setToken(storedToken);
         };
         
         fetchToken();
 
-        const refreshToken = async () => {
+        const refreshToken = async (): Promise<void> => {
         const storedToken = await getRefreshToken();
         setRefresh(storedToken);
         };

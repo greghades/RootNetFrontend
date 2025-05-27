@@ -120,6 +120,7 @@ const FavoritesScreen = () => {
           <ScrollView contentContainerStyle={styles.scrollContainer}>
             {favoritePosts.map((post) => (
               <PostCard
+                profile_photo={""}
                 key={post.id}
                 postId={post.id}
                 username={post.username}

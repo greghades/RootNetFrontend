@@ -1,12 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, Image, FlatList, TouchableOpacity } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import PostCard from '../components/PostCard';
 import BottomNavBar from '../components/BottomNavBar';
 import { styles } from '../styles/profileStyles';
+import { getToken, getUserData, PostResponse, UserDataResponse, URL_API, UserDataProfile } from '../config/constante';
 
 // Datos estáticos del usuario (para maquetación)
-const userData = {
+const userDataDummy = {
   username: 'Usuario',
   handle: '@usuarioactual',
   description: 'Programador FullStack Javascript Node.js, Nest, Next.js',
@@ -20,54 +21,6 @@ const authenticatedUser = {
   handle: '@pixelsz',
 };
 
-// Datos estáticos de las publicaciones (reutilizamos el formato de PostCard)
-const userPosts = [
-  {
-    id: '1',
-    username: 'Maximillian',
-    handle: '@pixelsz',
-    date: '3h',
-    content: "Y'ALL ready for this next post?",
-    image: 'https://i.pinimg.com/474x/d7/47/f7/d747f70ce52b0df12c1542b280fa8d76.jpg',
-    saves: 48,
-    likes: 383,
-    comments: 0,
-    commentsList: [],
-    isSaved: false,
-    isLiked: false,
-    likedBy: 'Zack John',
-  },
-  {
-    id: '2',
-    username: 'Maximillian',
-    handle: '@maxjacobson',
-    date: '3h',
-    content: "Y'ALL ready for this next post?",
-    saves: 46,
-    likes: 383,
-    comments: 0,
-    commentsList: [],
-    isSaved: true,
-    isLiked: true,
-  },
-  {
-    id: '3',
-    username: 'Maximillian',
-    handle: '@pixelsz',
-    date: '3h',
-    content: "Y'ALL ready for this next post?",
-    image: 'https://i.pinimg.com/474x/d7/47/f7/d747f70ce52b0df12c1542b280fa8d76.jpg',
-    saves: 48,
-    likes: 383,
-    comments: 0,
-    commentsList: [],
-    isSaved: false,
-    isLiked: false,
-    likedBy: 'Zack John',
-
-  }
-];
-
 const ProfileScreen = () => {
   const route = useRoute();
   const navigation = useNavigation();
@@ -75,14 +28,130 @@ const ProfileScreen = () => {
 
   // Estados para manejar el botón "Seguir" y el contador de seguidores
   const [isFollowing, setIsFollowing] = useState(false);
-  const [followers, setFollowers] = useState(userData.initialFollowers);
+  const [followers, setFollowers] = useState(userDataDummy.initialFollowers);
 
   // Para maquetación, usamos datos estáticos si no se pasan parámetros
-  const displayUsername = username || userData.username;
-  const displayHandle = handle || userData.handle;
+  const displayUsername = username || userDataDummy.username;
+  const displayHandle = handle || userDataDummy.handle;
 
   // Determinar si este perfil pertenece al usuario autenticado
   const isOwnProfile = displayHandle === authenticatedUser.handle;
+  const [token, setToken] = useState<string | null>(null);
+  const [myPost, setMyPost] = useState<[PostResponse] | []>([]);
+  const [userData, setUserData] = useState< UserDataResponse | null>(null);
+
+  const [dataProfile, setDataProfile] = useState< UserDataProfile | null>(null);
+
+  useEffect(() => {
+    const fetchUserData = async (): Promise<{ token: string; userData: UserDataResponse } | null> => {
+      try {
+        const storedToken = await getToken();
+        if (!storedToken) {
+          console.warn('Token no disponible');
+          return null;
+        }
+        
+        const storedUserData = await getUserData();
+        if (!storedUserData) {
+          console.warn('storedUserData no disponible');
+          return null;
+        }
+        
+        // Actualizar estados
+        setToken(storedToken);
+        setUserData(storedUserData);
+        
+        // Retornar los valores directamente
+        return { token: storedToken, userData: storedUserData };
+      } catch (error) {
+        console.error('Error en fetchUserData:', error);
+        return null;
+      }
+    };
+
+    const getUserProfile = async (token: string, username: string): Promise<void> => {
+      console.log(`${URL_API}/api/v1/users/user/${username}`);
+      try {
+        const response = await fetch(`${URL_API}/api/v1/users/user/${username}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+        });
+        
+        const data = await response.json();
+        
+        if (!response.ok) {
+          console.error('Error al obtener perfil:', data);
+          return;
+        }
+        
+        setDataProfile(data);
+      } catch (error) {
+        console.error('Error al obtener perfil:', error);
+      }
+    };
+
+    const fetchPosts = async (token: string, userId: number): Promise<void> => {
+      try {
+        const queryParams = `?user_id=${userId}`;
+        const response = await fetch(`${URL_API}/api/v1/posts/get-owner-posts/${queryParams}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+        });
+
+        const data = await response.json();
+        
+        if (!response.ok) {
+          console.error('Error al obtener posts:', data);
+          return;
+        }
+
+        const formattedPosts = data.map((post: any) => {
+          const [day, month, year, hourStr, minute] = post.created_at.split('/');
+          const hour = parseInt(hourStr, 10);
+          const hour12 = hour % 12 === 0 ? 12 : hour % 12;
+          const ampm = hour >= 12 ? 'pm' : 'am';
+          
+          return {
+            ...post,
+            created_date: `${day}/${month}/${year}`,
+            created_time: `${hour12.toString().padStart(2, '0')}:${minute}${ampm}`,
+          };
+        });
+        
+        setMyPost(formattedPosts);
+      } catch (error) {
+        console.error('Error al obtener posts:', error);
+      }
+    };
+
+    const loadData = async (): Promise<void> => {
+      try {
+        // 1. Primero obtenemos token y userData
+        const result = await fetchUserData();
+        if (!result) return;
+        
+        const { token, userData } = result;
+        
+        // 2. Luego obtenemos el perfil (usamos el username de los parámetros o del usuario)
+        const profileUsername = userData.username;
+        await getUserProfile(token, profileUsername);
+        
+        // 3. Finalmente obtenemos los posts
+        await fetchPosts(token, userData.id);
+      } catch (error) {
+        console.error('Error en loadData:', error);
+      }
+    };
+
+    loadData();
+  }, []); // Añadimos username como dependencia
+
 
   // Función para manejar el clic en el botón "Seguir"
   const handleFollowPress = () => {
@@ -123,24 +192,25 @@ const ProfileScreen = () => {
 
   const renderPost = ({ item }) => (
     <PostCard
+      profile_photo={""}
       postId={item.id}
-      username={item.username}
-      handle={item.handle}
-      date={item.date}
+      username={`${item.author_first_name} ${item.author_last_name} `}
+      handle={item.author}
+      date={item.created_date+" "+item.created_time}
       content={item.content}
-      image={item.image}
-      saves={item.saves}
-      likes={item.likes}
-      comments={item.comments}
-      commentsList={item.commentsList}
-      isSaved={item.isSaved}
-      isLiked={item.isLiked}
+      image={URL_API + item.image}
+      saves={item.favorites_count}
+      likes={item.likes_count}
+      comments={item.comments_count}
+      commentsList={[]}
+      isSaved={true}
+      isLiked={true}
       onSaveToggle={() => {}}
       onLikeToggle={() => {}}
       onCommentAdded={() => {}}
       likedBy={item.likedBy}
       onMorePress={handleMorePress} // Pasamos el callback
-      isOwnPost={item.handle === authenticatedUser.handle} // Determinamos si el post pertenece al usuario autenticado
+      isOwnPost={item.author === authenticatedUser.handle} // Determinamos si el post pertenece al usuario autenticado
     />
   );
 
@@ -170,19 +240,19 @@ const ProfileScreen = () => {
         {/* Imagen de perfil y datos del usuario */}
         <View style={styles.userInfo}>
           <Image
-            source={require('../assets/images/default-profile.jpg')}
+            source={dataProfile?.profile_photo ? `${URL_API}${dataProfile?.profile_photo}` : require('../assets/images/default-profile.jpg')}
             style={styles.profileImage}
           />
-          <Text style={styles.username}>{displayUsername}</Text>
-          <Text style={styles.handle}>{displayHandle}</Text>
-          <Text style={styles.description}>{userData.description}</Text>
-          <Text style={styles.joinDate}>Se unió en {userData.joinDate}</Text>
+          <Text style={styles.username}>{`${dataProfile?.first_name} ${dataProfile?.last_name}`}</Text>
+          <Text style={styles.handle}>{dataProfile?.username}</Text>
+          <Text style={styles.description}>{userDataDummy.description}</Text>
+          <Text style={styles.joinDate}>Se unió en {dataProfile?.date_joined}</Text>
           <View style={styles.followContainer}>
             <Text style={styles.followText}>
-              <Text style={styles.followNumber}>{followers}</Text> Seguidores
+              <Text style={styles.followNumber}>{dataProfile?.followers_count}</Text> Seguidores
             </Text>
             <Text style={styles.followText}>
-              <Text style={styles.followNumber}>{userData.following}</Text> Seguidos
+              <Text style={styles.followNumber}>{dataProfile?.following_count}</Text> Seguidos
             </Text>
           </View>
         </View>
@@ -190,7 +260,7 @@ const ProfileScreen = () => {
 
       {/* Lista de publicaciones */}
       <FlatList
-        data={userPosts}
+        data={myPost}
         renderItem={renderPost}
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.postsContainer}
