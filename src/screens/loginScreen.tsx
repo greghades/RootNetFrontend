@@ -21,7 +21,8 @@ const LoginScreen = () => {
   }
   
   interface LoginResponse {
-    Token: string;
+    access: string;
+    refresh: string;
     user: {
       id: number;
       username: string;
@@ -59,7 +60,7 @@ const LoginScreen = () => {
     
     
     try {
-      const response = await fetch(`${URL_API}api/v1/auth/login/`, {
+      const response = await fetch(`${URL_API}/api/v1/auth/login/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -84,7 +85,9 @@ const LoginScreen = () => {
       }
 
       // Guardar el token en AsyncStorage
-      await AsyncStorage.setItem('userToken', data.Token);
+      await AsyncStorage.setItem('accessToken', data.access);
+
+      await AsyncStorage.setItem('refreshToken', data.refresh);
       
       // Guardar información del usuario si es necesario
       await AsyncStorage.setItem('userData', JSON.stringify(data.user));

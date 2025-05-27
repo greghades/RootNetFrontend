@@ -6,72 +6,66 @@ import PostCard from '../components/PostCard';
 import BottomNavBar from '../components/BottomNavBar';
 import FloatingActionButton from '../components/FloatingActionButton';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getToken, getUserData, PostResponse, URL_API, UserDataResponse } from '../config/constante';
 
 const FeedScreen: React.FC = () => {
   const navigation = useNavigation();
   const [mockPosts, setMockPosts] = useState([]);
+  const [token, setToken] = useState<string | null>(null);
+  const [myPost, setMyPost] = useState<[PostResponse] | []>([]);
 
   // Cargar posts desde AsyncStorage al montar el componente
   useEffect(() => {
-    const loadPosts = async () => {
+    const fetchData = async () => {
       try {
-        const savedPosts = await AsyncStorage.getItem('mockPosts');
-        if (savedPosts) {
-          setMockPosts(JSON.parse(savedPosts));
-        } else {
-          const initialPosts = [
-            {
-              id: '1',
-              username: 'Marianee',
-              handle: '@marianee',
-              date: '1/21/20',
-              content:
-                'Hey @theflaticon @iconmonstr @pixelsz @ielbruce @romanshamin @vect @glyphish! Check our new article "Top icons Packs and Resources for Web" 😎 marianee.com/blog/top-icons...',
-              image: 'https://i.pinimg.com/474x/d7/47/f7/d747f70ce52b0df12c1542b280fa8d76.jpg',
-              saves: 7,
-              likes: 3,
-              comments: 0,
-              commentsList: [], // Nuevo campo para los comentarios
-              isSaved: false,
-              isLiked: false,
-            },
-            {
-              id: '2',
-              username: 'Maximillian',
-              handle: '@maxjacobson',
-              date: '3h',
-              content: "Y'ALL ready for this next post?",
-              saves: 48,
-              likes: 383,
-              comments: 0,
-              commentsList: [],
-              isSaved: false,
-              isLiked: false,
-            },
-            {
-              id: '3',
-              username: 'Maximillian',
-              handle: '@pixelsz',
-              date: '3h',
-              content: "Y'ALL ready for this next post?",
-              saves: 46,
-              likes: 383,
-              comments: 0,
-              commentsList: [],
-              isSaved: true,
-              isLiked: true,
-            },
-          ];
-          setMockPosts(initialPosts);
-          await AsyncStorage.setItem('mockPosts', JSON.stringify(initialPosts));
+        const storedToken = await getToken();
+        if (!storedToken) {
+          console.warn('Token no disponible');
+          return;
         }
+        setToken(storedToken);
+
+        const response = await fetch(`${URL_API}/api/v1/posts/get-posts/`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${storedToken}`,
+          },
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          console.error('Error al obtener posts del servidor:', data);
+          return;
+        }
+
+      const postsConCamposExtra = data.map((post) => {
+        const [day, month, year, hourStr, minute] = post.created_at.split('/');
+        const hour = parseInt(hourStr, 10);
+        const hour12 = hour % 12 === 0 ? 12 : hour % 12;
+        const ampm = hour >= 12 ? 'pm' : 'am';
+        const formattedTime = `${hour12.toString().padStart(2, '0')}:${minute}${ampm}`;
+        const formattedDate = `${day}/${month}/${year}`;
+
+        return {
+          ...post,
+          created_date: formattedDate,
+          created_time: formattedTime,
+        };
+      });
+        console.log(postsConCamposExtra)
+        setMyPost(postsConCamposExtra);
+
       } catch (error) {
-        console.error('Error al cargar los posts:', error);
+        console.error('Error al obtener los posts:', error);
       }
     };
 
-    loadPosts();
+    fetchData();
+    
   }, []);
+
 
   // Función para agregar un nuevo post
   const addPost = async (newPost) => {
@@ -136,18 +130,18 @@ const FeedScreen: React.FC = () => {
   return (
     <View style={feedStyles.container}>
       <ScrollView contentContainerStyle={feedStyles.scrollContainer}>
-        {mockPosts.map((post) => (
+        {myPost.map((post) => (
           <PostCard
             key={post.id}
             postId={post.id}
-            username={post.username}
-            handle={post.handle}
-            date={post.date}
+            username={post.author}
+            handle={post.author}
+            date={post.created_date + " "+ post.created_time}
             content={post.content}
-            image={post.image}
-            saves={post.saves}
-            likes={post.likes}
-            comments={post.comments}
+            image={URL_API+post.image}
+            saves={0}
+            likes={0}
+            comments={0}
             commentsList={post.commentsList || []} // Pasamos la lista de comentarios
             isSaved={post.isSaved || false}
             isLiked={post.isLiked || false}
