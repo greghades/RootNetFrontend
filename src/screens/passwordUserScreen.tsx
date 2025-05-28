@@ -2,13 +2,9 @@ import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, Alert } from "react-native";
 import { useNavigation } from '@react-navigation/native';
 import { AntDesign } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { styles } from '../styles/passwordUserStyles';
-
-interface Errors {
-    contrasenaActual?: string;
-    nuevaContrasena?: string;
-    confirmarContrasena?: string;
-}
+import { URL_API } from "../config/constante";
 
 const PasswordUserScreen = () => {
     const navigation = useNavigation();
@@ -18,14 +14,13 @@ const PasswordUserScreen = () => {
         confirmarContrasena: '',
     });
 
-    const [errors, setErrors] = useState<Errors>({});
+    const [errors, setErrors] = useState({});
     const [showPasswordCurrent, setShowPasswordCurrent] = useState(true);
     const [showPasswordNew, setShowPasswordNew] = useState(true);
     const [showConfirmPassword, setShowConfirmPassword] = useState(true);
 
-    // Validate
-    const validate = (): boolean => {
-        let newErrors: Errors = {};
+    const validate = () => {
+        let newErrors = {};
 
         if (!form.contrasenaActual) {
             newErrors.contrasenaActual = 'La contraseña actual es requerida.';
@@ -34,13 +29,13 @@ const PasswordUserScreen = () => {
         if (!form.nuevaContrasena) {
             newErrors.nuevaContrasena = 'La nueva contraseña es requerida.';
         } else if (form.nuevaContrasena.length < 6) {
-            newErrors.nuevaContrasena = 'La nueva contraseña debe tener al menos 6 caracteres.';
+            newErrors.nuevaContrasena = 'Debe tener al menos 6 caracteres.';
         } else if (form.nuevaContrasena === form.contrasenaActual) {
-            newErrors.nuevaContrasena = 'La nueva contraseña no puede ser igual a la actual.';
+            newErrors.nuevaContrasena = 'No puede ser igual a la actual.';
         }
 
         if (!form.confirmarContrasena) {
-            newErrors.confirmarContrasena = 'Debe confirmar su nueva contraseña.';
+            newErrors.confirmarContrasena = 'Debe confirmar la contraseña.';
         } else if (form.nuevaContrasena !== form.confirmarContrasena) {
             newErrors.confirmarContrasena = 'Las contraseñas no coinciden.';
         }
@@ -49,22 +44,55 @@ const PasswordUserScreen = () => {
         return Object.keys(newErrors).length === 0;
     };
 
-    const handleUpdatePassword = () => {
-        if (validate()) {
-            Alert.alert(
-                "Contraseña Actualizada",
-                "Tu contraseña ha sido actualizada exitosamente.",
-                [{ text: "Aceptar", onPress: () => navigation.navigate("MyUser") }]
-            );
+    const handleUpdatePassword = async () => {
+        if (!validate()) return;
 
-            console.log("Actualización exitosa", form);
+        try {
+            const token = await AsyncStorage.getItem("token");
+            if (!token) {
+                Alert.alert("Error", "No se encontró el token de autenticación.");
+                return;
+            }
 
-            // Clear form
-            setForm({
-                contrasenaActual: '',
-                nuevaContrasena: '',
-                confirmarContrasena: '',
+            const response = await fetch(`${URL_API}/api/v1/auth/change-password/`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                    current_password: form.contrasenaActual,
+                    new_password: form.nuevaContrasena,
+                    confirm_password: form.confirmarContrasena,
+                }),
             });
+
+            const responseData = await response.json();
+            console.log("Respuesta del servidor:", responseData);
+
+            if (response.ok) {
+                Alert.alert(
+                    "Contraseña Actualizada",
+                    "Tu contraseña ha sido actualizada exitosamente.",
+                    [{ text: "Aceptar", onPress: () => navigation.navigate("MyUser") }]
+                );
+                setForm({
+                    contrasenaActual: '',
+                    nuevaContrasena: '',
+                    confirmarContrasena: '',
+                });
+            } else {
+                if (response.status === 400) {
+                    Alert.alert("Error", "Datos inválidos o contraseñas no coinciden.");
+                } else if (response.status === 401) {
+                    Alert.alert("Error", "Contraseña actual incorrecta o token inválido.");
+                } else {
+                    Alert.alert("Error", "Ocurrió un error al actualizar la contraseña.");
+                }
+            }
+        } catch (error) {
+            console.error("Error al cambiar la contraseña:", error);
+            Alert.alert("Error", "No se pudo conectar al servidor.");
         }
     };
 
@@ -72,7 +100,7 @@ const PasswordUserScreen = () => {
         <View style={styles.container}>
             <Text style={styles.title}>Actualizar Contraseña</Text>
 
-            {/* Current Password */}
+            {/* Contraseña actual */}
             <View style={styles.inputContainer}>
                 <Text style={styles.label}>Contraseña Actual</Text>
                 <View style={styles.passwordContainer}>
@@ -91,7 +119,7 @@ const PasswordUserScreen = () => {
                 {errors.contrasenaActual && <Text style={styles.error}>{errors.contrasenaActual}</Text>}
             </View>
 
-            {/* New Password */}
+            {/* Nueva contraseña */}
             <View style={styles.inputContainer}>
                 <Text style={styles.label}>Nueva Contraseña</Text>
                 <View style={styles.passwordContainer}>
@@ -110,7 +138,7 @@ const PasswordUserScreen = () => {
                 {errors.nuevaContrasena && <Text style={styles.error}>{errors.nuevaContrasena}</Text>}
             </View>
 
-            {/* Confirm New Password */}
+            {/* Confirmar nueva contraseña */}
             <View style={styles.inputContainer}>
                 <Text style={styles.label}>Confirmar Nueva Contraseña</Text>
                 <View style={styles.passwordContainer}>
@@ -129,7 +157,7 @@ const PasswordUserScreen = () => {
                 {errors.confirmarContrasena && <Text style={styles.error}>{errors.confirmarContrasena}</Text>}
             </View>
 
-            {/* Save Changes Button */}
+            {/* Botón guardar */}
             <TouchableOpacity style={styles.button} onPress={handleUpdatePassword}>
                 <Text style={styles.buttonText}>Guardar Cambios</Text>
             </TouchableOpacity>
