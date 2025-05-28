@@ -42,6 +42,7 @@ const RegisterScreen: React.FC = () => {
   const [errors, setErrors] = useState<Errors>({});
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   // Validate
   const validate = (): boolean => {
@@ -87,63 +88,57 @@ const RegisterScreen: React.FC = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleRegister = async (): Promise<void>  => {
+  const handleRegister = async () => {
+    if (loading) return;
     if (!validate()) return;
 
+    setLoading(true);
     try {
-      const response = await fetch(URL_API + "/api/v1/auth/signup/", {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          id: "",
-          username: form.usuario,
-          email: form.correo,
-          password: form.contrasena,
-          first_name: form.nombre,
-          last_name: form.apellido
-        }),
-      });
+        const response = await fetch(`${URL_API}/api/v1/auth/signup/`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                id: "",
+                username: form.usuario,
+                email: form.correo,
+                password: form.contrasena,
+                first_name: form.nombre,
+                last_name: form.apellido
+            }),
+        });
 
-      const data: ApiResponse = await response.json();
+        const responseText = await response.text();
+        console.log("Texto de respuesta del servidor:", responseText);
 
-      if (!response.ok) {
-        let errorMessage = 'Error en el registro';
-        if (data.message) {
-          errorMessage = data.message;
-        } else if (response.status === 400) {
-          errorMessage = 'Datos inválidos';
-        } else if (response.status === 409) {
-          errorMessage = 'El correo ya está registrado';
+        let data;
+        try {
+            data = JSON.parse(responseText);
+        } catch (error) {
+            console.error("Error al convertir a JSON:", error);
+            Alert.alert("Error", "El servidor devolvió una respuesta inesperada.");
+            setLoading(false);
+            return;
         }
-        Alert.alert(
-          "Error",
-          errorMessage
-        );
-        return
+
+        if (!response.ok) {
+            let errorMessage = data.message || "Error en el registro";
+            Alert.alert("Error", errorMessage);
+            setLoading(false);
+            return;
+        }
+
+        Alert.alert("Registro exitoso", "Ya puedes iniciar sesión.");
+        navigation.navigate("Login");
+
+      } catch (error) {
+          console.error("Error en el registro:", error);
+          Alert.alert("Error", "Ocurrió un problema al procesar el registro.");
+      } finally {
+          setLoading(false);
       }
-
-      Alert.alert(
-        "Registro exitoso",
-        data.message || "Ya puedes iniciar sesión con Rootnet.",
-        [
-          { text: "Aceptar", onPress: () => navigation.navigate("Login") }
-        ]
-      );
-      console.log("Registro completado", data);
-
-    } catch (error) {
-      console.error("Error en el registro:", error);
-      const errorMessage = error instanceof Error ? error.message : "Ocurrió un error al registrar. Por favor intenta nuevamente.";
-      Alert.alert(
-        "Error",
-        errorMessage
-      );
-    } finally {
-    }
   };
-
 
   return (
     <ScrollView contentContainerStyle={styles.scrollContainer}>
@@ -218,11 +213,12 @@ const RegisterScreen: React.FC = () => {
         {/* Button */}
         <ButtonContainer style={styles.buttonContainer}>
           <Button
-            onPress={handleRegister}
-            title="Crear Cuenta"
-            style={styles.registerButton}
-            textStyle={styles.registerText}
-          />
+          onPress={handleRegister}
+          title={loading ? "Procesando..." : "Crear Cuenta"}
+          disabled={loading}
+          style={styles.registerButton}
+          textStyle={styles.registerText}
+        />
           <Button
             onPress={() => navigation.navigate('Login')}
             title="¡Ya tengo una cuenta!"
