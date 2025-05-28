@@ -18,6 +18,7 @@ const PasswordUserScreen = () => {
     const [showPasswordCurrent, setShowPasswordCurrent] = useState(true);
     const [showPasswordNew, setShowPasswordNew] = useState(true);
     const [showConfirmPassword, setShowConfirmPassword] = useState(true);
+    const [loading, setLoading] = useState(false);
 
     const validate = () => {
         let newErrors = {};
@@ -47,10 +48,14 @@ const PasswordUserScreen = () => {
     const handleUpdatePassword = async () => {
         if (!validate()) return;
 
+        setLoading(true);
+
         try {
-            const token = await AsyncStorage.getItem("token");
+            const token = await AsyncStorage.getItem('accessToken');
+
             if (!token) {
                 Alert.alert("Error", "No se encontró el token de autenticación.");
+                setLoading(false);
                 return;
             }
 
@@ -71,16 +76,13 @@ const PasswordUserScreen = () => {
             console.log("Respuesta del servidor:", responseData);
 
             if (response.ok) {
-                Alert.alert(
-                    "Contraseña Actualizada",
-                    "Tu contraseña ha sido actualizada exitosamente.",
-                    [{ text: "Aceptar", onPress: () => navigation.navigate("MyUser") }]
-                );
+                Alert.alert("Contraseña Actualizada", "Tu contraseña ha sido actualizada exitosamente.");
                 setForm({
                     contrasenaActual: '',
                     nuevaContrasena: '',
                     confirmarContrasena: '',
                 });
+                navigation.navigate("Settings");
             } else {
                 if (response.status === 400) {
                     Alert.alert("Error", "Datos inválidos o contraseñas no coinciden.");
@@ -93,6 +95,8 @@ const PasswordUserScreen = () => {
         } catch (error) {
             console.error("Error al cambiar la contraseña:", error);
             Alert.alert("Error", "No se pudo conectar al servidor.");
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -158,8 +162,10 @@ const PasswordUserScreen = () => {
             </View>
 
             {/* Botón guardar */}
-            <TouchableOpacity style={styles.button} onPress={handleUpdatePassword}>
-                <Text style={styles.buttonText}>Guardar Cambios</Text>
+            <TouchableOpacity style={styles.button} onPress={handleUpdatePassword} disabled={loading}>
+                <Text style={styles.buttonText}>
+                    {loading ? "Procesando..." : "Guardar Cambios"}
+                </Text>
             </TouchableOpacity>
         </View>
     );
