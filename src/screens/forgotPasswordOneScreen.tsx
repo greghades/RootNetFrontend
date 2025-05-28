@@ -12,8 +12,6 @@ import { useNavigation } from "@react-navigation/native";
 import { styles } from "../styles/forgotPasswordOneStyles";
 import { URL_API } from "../config/constante";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-// Si usas AsyncStorage o contexto para el token:
-// import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const ForgotPasswordOneScreen = () => {
     const navigation = useNavigation();
@@ -42,13 +40,11 @@ const ForgotPasswordOneScreen = () => {
 
         try {
             const response = await fetch(`${URL_API}/api/v1/auth/send-code/`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                email: form.correo,
-            }),
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ email: form.correo }),
             });
 
             const responseText = await response.text();
@@ -56,21 +52,27 @@ const ForgotPasswordOneScreen = () => {
 
             let data;
             try {
-            data = JSON.parse(responseText);
+                data = JSON.parse(responseText);
             } catch (error) {
-            console.error("Error al convertir respuesta a JSON:", error);
-            Alert.alert("Error", "El servidor devolvió una respuesta inesperada.");
-            return;
+                console.error("Error al convertir respuesta a JSON:", error);
+                Alert.alert("Error", "El servidor devolvió una respuesta inesperada.");
+                setLoading(false);
+                return;
             }
 
             if (!response.ok) {
-            let errorMessage = data?.detail || "Error en el envío del código";
-            if (response.status === 401) {
-                errorMessage = "Credenciales inválidas";
+                let errorMessage = data?.detail || "Error en el envío del código";
+                if (response.status === 401) {
+                    errorMessage = "Credenciales inválidas";
+                }
+                Alert.alert("Error", errorMessage);
+                setLoading(false);
+                return;
             }
-            Alert.alert("Error", errorMessage);
-            return;
-            }
+
+            // Guardar email para las siguientes pantallas
+            await AsyncStorage.setItem("resetEmail", form.correo);
+            console.log("Correo guardado en AsyncStorage:", form.correo);
 
             Alert.alert("Código enviado", "Revisa tu correo electrónico para recuperar tu cuenta.");
             navigation.navigate("ForgotTwo");
