@@ -20,6 +20,7 @@ const CreatePostScreen = () => {
   const { addPost } = route.params || {};
   const [token, setToken] = useState<string | null>(null);
   const [userData, setUserData] = useState< UserDataResponse | null>(null);
+  const [isPublishing, setIsPublishing] = useState(false);
 
   const [keyboardHeight, setKeyboardHeight] = useState(0);
   const bottomBarPosition = new Animated.Value(0);
@@ -88,7 +89,9 @@ const CreatePostScreen = () => {
   };
 
   const handlePublish = async () => {
-    if (!postContent.trim()) return;
+    if (!postContent.trim() || isPublishing) return; // ← Bloquea si ya está publicando
+
+      setIsPublishing(true); // ← Inicia bloqueo
 
     try {
       const formData = new FormData();
@@ -133,6 +136,8 @@ const CreatePostScreen = () => {
     } catch (error) {
       console.error('Error publicando el post:', error);
       Alert.alert('Error', 'No se pudo publicar el post');
+
+      setIsPublishing(false);
     }
   };
 
@@ -150,10 +155,15 @@ const CreatePostScreen = () => {
           </TouchableOpacity>
           <TouchableOpacity
             onPress={handlePublish}
-            disabled={!postContent.trim()}
-            style={[styles.publishButton, { opacity: postContent.trim() ? 1 : 0.5 }]}
+            disabled={!postContent.trim() || isPublishing} // ← aquí el bloqueo
+            style={[
+              styles.publishButton,
+              { opacity: !postContent.trim() || isPublishing ? 0.5 : 1 }, // ← también visualmente
+            ]}
           >
-            <Text style={styles.publishButtonText}>Publicar</Text>
+            <Text style={styles.publishButtonText}>
+              {isPublishing ? 'Publicando...' : 'Publicar'}
+            </Text>
           </TouchableOpacity>
         </View>
 
