@@ -18,6 +18,8 @@ import { CountryPicker } from "react-native-country-codes-picker";
 import { MaskedTextInput } from "react-native-mask-text";
 import { styles } from "../styles/editUserStyles";
 import { COLORS } from "../styles/colors";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { URL_API } from "../config/constante";
 
 interface Errors {
   nombre?: string;
@@ -41,19 +43,20 @@ const EditUserScreen = () => {
   const [profileImage, setProfileImage] = useState<string | null>(null);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [birthDate, setBirthDate] = useState<Date | null>(null);
-  const [countryCode, setCountryCode] = useState("VE"); // Código ISO del país
-  const [callingCode, setCallingCode] = useState("+58"); // Código de llamada
-  const [flag, setFlag] = useState("🇻🇪"); // Nuevo estado para el emoji de la bandera
+  const [countryCode, setCountryCode] = useState("VE");
+  const [callingCode, setCallingCode] = useState("+58");
+  const [flag, setFlag] = useState("🇻🇪");
   const [showPicker, setShowPicker] = useState(false);
   const [selected, setSelected] = useState<string[]>([]);
   const [errors, setErrors] = useState<Errors>({});
+  const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
-    nombre: "Norelvis",
-    apellido: "Peraza",
-    usuario: "@nore",
+    nombre: "",
+    apellido: "",
+    usuario: "@",
     fechaNac: "",
     telefono: "",
-    correo: "norelvisperaza@gmail.com",
+    correo: "",
     lugarEstudio: "",
     periodoEstudio: "",
     especializacion: "",
@@ -64,7 +67,7 @@ const EditUserScreen = () => {
     disponibilidad: "",
   });
 
-  const interesesDisponibles = [
+    const interesesDisponibles = [
     "Arquitectura de Software",
     "Backend",
     "Bases de Datos",
@@ -106,39 +109,28 @@ const EditUserScreen = () => {
   };
 
   const toggleSelect = (interest: string) => {
-    let updatedSelected;
-    if (selected.includes(interest)) {
-      updatedSelected = selected.filter((item) => item !== interest);
-    } else {
-      updatedSelected = [...selected, interest];
-    }
-
-    setSelected(updatedSelected);
-    handleChange("intereses", updatedSelected.join(", ")); // update the status of the form
+    const updated = selected.includes(interest)
+      ? selected.filter((i) => i !== interest)
+      : [...selected, interest];
+    setSelected(updated);
+    handleChange("intereses", updated.join(", "));
   };
 
   const handleUpdateProfile = () => {
-    let newErrors: Errors = {};
+    const newErrors: Errors = {};
 
-    // mandatory validations
+    // Validaciones obligatorias
     if (!form.nombre.trim()) newErrors.nombre = "El nombre es obligatorio.";
-    if (!form.apellido.trim())
-      newErrors.apellido = "El apellido es obligatorio.";
+    if (!form.apellido.trim()) newErrors.apellido = "El apellido es obligatorio.";
     if (!form.usuario.trim()) newErrors.usuario = "El usuario es obligatorio.";
-    if (!form.fechaNac.trim())
-      newErrors.fechaNac = "La fecha de nacimiento es obligatoria.";
-    if (!form.correo.trim())
-      newErrors.correo = "El correo electrónico es obligatorio.";
-    if (!form.lugarEstudio.trim())
-      newErrors.lugarEstudio = "El lugar de estudio es obligatorio.";
-    if (!form.periodoEstudio.trim())
-      newErrors.periodoEstudio = "El periodo de estudio es obligatorio.";
-    if (selected.length === 0)
-      newErrors.intereses = "Debes seleccionar al menos un interés.";
-    if (!form.disponibilidad.trim())
-      newErrors.disponibilidad = "La disponibilidad es obligatoria.";
+    if (!form.fechaNac.trim()) newErrors.fechaNac = "La fecha de nacimiento es obligatoria.";
+    if (!form.correo.trim()) newErrors.correo = "El correo electrónico es obligatorio.";
+    if (!form.lugarEstudio.trim()) newErrors.lugarEstudio = "El lugar de estudio es obligatorio.";
+    if (!form.periodoEstudio.trim()) newErrors.periodoEstudio = "El periodo de estudio es obligatorio.";
+    if (selected.length === 0) newErrors.intereses = "Debes seleccionar al menos un interés.";
+    if (!form.disponibilidad.trim()) newErrors.disponibilidad = "La disponibilidad es obligatoria.";
 
-    // format validations
+    // Validaciones de formato
     if (form.nombre && !/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(form.nombre)) {
       newErrors.nombre = "El nombre solo debe contener letras.";
     }
@@ -151,22 +143,17 @@ const EditUserScreen = () => {
     if (form.telefono && !/^\d{7,15}$/.test(form.telefono)) {
       newErrors.telefono = "El teléfono debe contener entre 7 y 15 números.";
     }
-    if (
-      form.correo &&
-      !/^[\w.-]+@[a-zA-Z\d.-]+\.[a-zA-Z]{2,}$/.test(form.correo)
-    ) {
+    if (form.correo && !/^[\w.-]+@[a-zA-Z\d.-]+\.[a-zA-Z]{2,}$/.test(form.correo)) {
       newErrors.correo = "El correo no tiene un formato válido.";
     }
     if (form.enlaceGit && !/^https:\/\/.+/.test(form.enlaceGit)) {
       newErrors.enlaceGit = "El enlace de GitHub debe comenzar con 'https://'.";
     }
     if (form.enlaceLinkedIn && !/^https:\/\/.+/.test(form.enlaceLinkedIn)) {
-      newErrors.enlaceLinkedIn =
-        "El enlace de LinkedIn debe comenzar con 'https://'.";
+      newErrors.enlaceLinkedIn = "El enlace de LinkedIn debe comenzar con 'https://'.";
     }
 
     setErrors(newErrors);
-
     if (Object.keys(newErrors).length > 0) {
       Alert.alert("Error", "Por favor verifica los campos");
       return false;
@@ -175,14 +162,58 @@ const EditUserScreen = () => {
     return true;
   };
 
-  const handleUpdate = () => {
-    if (handleUpdateProfile()) {
+  const handleUpdate = async () => {
+    if (!handleUpdateProfile()) return;
+
+    setLoading(true);
+
+    try {
+      const token = await AsyncStorage.getItem("accessToken");
+
+      const payload = {
+        username: form.usuario.replace("@", ""),
+        first_name: form.nombre,
+        last_name: form.apellido,
+        email: form.correo,
+        phone: `${callingCode}${form.telefono}`,
+        street: form.lugarEstudio,
+        house_number: form.periodoEstudio.replace(/\s/g, ""),
+        especializacion: form.especializacion,
+        experiencia: form.experienciaLaboral,
+        intereses: selected,
+        github: form.enlaceGit,
+        linkedin: form.enlaceLinkedIn,
+        disponibilidad: form.disponibilidad,
+        fecha_nacimiento: form.fechaNac,
+      };
+
+      const response = await fetch(`${URL_API}/api/v1/users/profile/`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error(errorData);
+        Alert.alert("Error", "No se pudo actualizar el perfil");
+          setLoading(false);
+        return;
+      }
+
       Alert.alert(
         "Actualización exitosa",
         "Gracias por mantener tu información actualizada.",
-        [{ text: "Aceptar", onPress: () => navigation.navigate("MyUser") }]
+        [{ text: "Aceptar", onPress: () => navigation.navigate("Settings") }]
       );
-      console.log("Actualización completada", form);
+    } catch (error) {
+      console.error(error);
+      Alert.alert("Error", "Ocurrió un error al conectar con el servidor.");
+      
+      setLoading(false);
     }
   };
 
@@ -305,18 +336,18 @@ const EditUserScreen = () => {
               pickerButtonOnPress={(item) => {
                 setCountryCode(item.code);
                 setCallingCode(item.dial_code);
-                setFlag(item.flag); // Almacenar el emoji de la bandera
+                setFlag(item.flag);
                 setShowPicker(false);
               }}
               style={{
-                modal: { height: 500, backgroundColor: COLORS.background }, // Fondo oscuro para el modal
-                countryButtonStyles: { height: 60,backgroundColor: "#1A1A2E" }, // Fondo oscuro para el botón del país
-                textInput: { color: "#fff",backgroundColor: COLORS.input }, // Estilo del input de búsqueda
-                countryName: { color: "#fff" }, // Estilo del nombre del país
-                dialCode: { color: "#fff" }, // Estilo del código de llamada
-                flag: 24, // Tamaño del emoji en el modal
+                modal: { height: 500, backgroundColor: COLORS.background },
+                countryButtonStyles: { height: 60,backgroundColor: "#1A1A2E" },
+                textInput: { color: "#fff",backgroundColor: COLORS.input },
+                countryName: { color: "#fff" },
+                dialCode: { color: "#fff" },
+                flag: 24,
               }}
-              lang="es" // Idioma en español
+              lang="es"
             />
           </TouchableOpacity>
           <TextInput
@@ -526,8 +557,10 @@ const EditUserScreen = () => {
         )}
       </View>
 
-      <TouchableOpacity style={styles.button} onPress={handleUpdate}>
-        <Text style={styles.buttonText}>Actualizar Datos</Text>
+      <TouchableOpacity style={styles.button} onPress={handleUpdate} disabled={loading}>
+        <Text style={styles.buttonText}>
+          {loading ? "Procesando..." : "Actualizar Datos"}
+        </Text>
       </TouchableOpacity>
     </ScrollView>
   );
