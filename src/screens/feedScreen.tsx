@@ -16,7 +16,7 @@ const FeedScreen: React.FC = () => {
 
   // Cargar posts desde AsyncStorage al montar el componente
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchData = async (): Promise<void> => {
       try {
         const storedToken = await getToken();
         if (!storedToken) {
@@ -54,7 +54,6 @@ const FeedScreen: React.FC = () => {
           created_time: formattedTime,
         };
       });
-        console.log(postsConCamposExtra)
         setMyPost(postsConCamposExtra);
 
       } catch (error) {
@@ -132,16 +131,17 @@ const FeedScreen: React.FC = () => {
       <ScrollView contentContainerStyle={feedStyles.scrollContainer}>
         {myPost.map((post) => (
           <PostCard
+            profile_photo={""}
             key={post.id}
             postId={post.id}
-            username={post.author}
+            username={`${post.author_first_name} ${post.author_last_name} `}
             handle={post.author}
             date={post.created_date + " "+ post.created_time}
             content={post.content}
             image={URL_API+post.image}
-            saves={0}
-            likes={0}
-            comments={0}
+            saves={post.favorites_count}
+            likes={post.likes_count}
+            comments={post.comments_count}
             commentsList={post.commentsList || []} // Pasamos la lista de comentarios
             isSaved={post.isSaved || false}
             isLiked={post.isLiked || false}

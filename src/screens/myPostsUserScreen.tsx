@@ -1,9 +1,10 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { SafeAreaView, View, Image, Text } from 'react-native';
 import UserProfileWithPosts from '../components/userProfileWithPosts';
 import BottomNavBar from '../components/BottomNavBar';
 import FloatingActionButton from '../components/FloatingActionButton';
 import { styles } from '../styles/myPostsUserStyles';
+import { PostResponse } from '../config/constante';
 
 const MyPostsUserScreen: React.FC = () => {
     // Example data
@@ -14,6 +15,7 @@ const MyPostsUserScreen: React.FC = () => {
         followers: 83,
         following: 217,
     };
+    
 
     const handleCreatePost = () => {
         // Logic to create a new post (just a log for now)

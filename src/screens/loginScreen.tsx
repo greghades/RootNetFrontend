@@ -10,6 +10,7 @@ const LoginScreen = () => {
   const navigation = useNavigation();
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState<Errors>({});
+  const [loading, setLoading] = useState(false);
 
   const [form, setForm] = useState({
     correo: "",
@@ -55,60 +56,55 @@ const LoginScreen = () => {
       return Object.keys(newErrors).length === 0;
   };
 
-  const handleLogin = async (): Promise<void> => {
+  const handleLogin = async () => {
+    if (loading) return; // ⛔ Evita ejecutar la función si ya está en proceso
     if (!validate()) return;
-    
-    
+
+    setLoading(true); // 🔒 Bloquea el botón
     try {
-      const response = await fetch(`${URL_API}/api/v1/auth/login/`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: form.correo,
-          password: form.contrasena
-        }),
-      });
+        const response = await fetch(`${URL_API}/api/v1/auth/login/`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                email: form.correo,
+                password: form.contrasena
+            }),
+        });
 
-      const data: LoginResponse = await response.json();
-      
-      if (!response.ok) {
-        let errorMessage = 'Error en el inicio de sesión';
-        if (data.message?.Message) {
-          errorMessage = data.message.Message;
-        } else if (response.status === 401) {
-          errorMessage = 'Credenciales inválidas';
+        const responseText = await response.text();
+        console.log("Respuesta del servidor:", responseText);
+
+        let data;
+        try {
+            data = JSON.parse(responseText);
+        } catch (error) {
+            console.error("Error al convertir a JSON:", error);
+            Alert.alert("Error", "El servidor devolvió una respuesta inesperada.");
+            setLoading(false); // Reactiva el botón si hay error
+            return;
         }
-        Alert.alert("Error", errorMessage);
-        return;
+
+        if (!response.ok) {
+            let errorMessage = data.message?.Message || "Error en el inicio de sesión";
+            Alert.alert("Error", errorMessage);
+            setLoading(false);
+            return;
+        }
+
+        await AsyncStorage.setItem('accessToken', data.access);
+        await AsyncStorage.setItem('refreshToken', data.refresh);
+        await AsyncStorage.setItem('userData', JSON.stringify(data.user));
+
+        navigation.navigate("Feed");
+
+      } catch (error) {
+          console.error("Error en el login:", error);
+          Alert.alert("Error", "Ocurrió un error al iniciar sesión.");
+      } finally {
+          setLoading(false); // Reactiva el botón después de la solicitud
       }
-
-      // Guardar el token en AsyncStorage
-      await AsyncStorage.setItem('accessToken', data.access);
-
-      await AsyncStorage.setItem('refreshToken', data.refresh);
-      
-      // Guardar información del usuario si es necesario
-      await AsyncStorage.setItem('userData', JSON.stringify(data.user));
-
-      const obt = await AsyncStorage.getItem('userToken')
-      console.log("obt", obt)
-
-      // Navegar al feed después de login exitoso
-      navigation.navigate("Feed");
-
-    } catch (error) {
-      console.error("Error en el login:", error);
-      let errorMessage = "Ocurrió un error al iniciar sesión";
-      
-      if (error instanceof Error) {
-        errorMessage = error.message;
-      }
-      Alert.alert("Error", errorMessage);      
-      
-    } finally {
-    }
   };
 
   return (
@@ -160,8 +156,8 @@ const LoginScreen = () => {
           <Text style={styles.forgotText}>¡Olvide mi contraseña!</Text>
         </TouchableOpacity>
       </View>
-      <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-        <Text style={styles.loginText}>Acceso</Text>
+      <TouchableOpacity style={styles.loginButton} onPress={handleLogin} disabled={loading}>
+          <Text style={styles.loginText}>{loading ? "Procesando..." : "Acceso"}</Text>
       </TouchableOpacity>
     </View>
   );

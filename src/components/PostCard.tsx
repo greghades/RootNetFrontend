@@ -7,6 +7,7 @@ import { COLORS } from '../styles/colors';
 import { styles } from '../styles/feedStyles';
 
 type PostCardProps = {
+  profile_photo: string;
   username: string;
   handle: string;
   date: string;
@@ -28,6 +29,7 @@ type PostCardProps = {
 };
 
 const PostCard: React.FC<PostCardProps> = ({
+  profile_photo,
   username,
   handle,
   date,
@@ -104,7 +106,7 @@ const PostCard: React.FC<PostCardProps> = ({
       <View style={styles.header}>
         <TouchableOpacity onPress={handleProfilePress}>
           <Image
-            source={require('../assets/images/default-profile.jpg')}
+            source={profile_photo ? `${URL_API}${profile_photo}` : require('../assets/images/default-profile.jpg')}
             style={styles.profileImage}
           />
         </TouchableOpacity>

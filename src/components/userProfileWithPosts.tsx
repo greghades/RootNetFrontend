@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, Image, TouchableOpacity, Alert, FlatList, Modal, Dimensions } from 'react-native';
 import { useNavigation } from "@react-navigation/native";
 import { Entypo } from '@expo/vector-icons';
@@ -6,6 +6,9 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import { styles } from '../styles/feedStyles';
 import { COLORS } from '../styles/colors';
+import { getToken, getUserData, PostResponse, UserDataResponse, URL_API } from '../config/constante';
+
+
 
 type Post = {
     id: string;
@@ -63,8 +66,65 @@ const UserProfileWithPosts: React.FC = () => {
     const [modalPosition, setModalPosition] = useState<{ x: number; y: number } | null>(null);
     const screenWidth = Dimensions.get('window').width;
     const screenHeight = Dimensions.get('window').height;
+    const [token, setToken] = useState<string | null>(null);
+    const [myPost, setMyPost] = useState<[PostResponse] | []>([]);
+    const [userData, setUserData] = useState< UserDataResponse | null>(null);
 
+    useEffect(() => {
+        const fetchData = async () : Promise<void> => {
+          try {
+            const storedToken = await getToken();
+            if (!storedToken) {
+              console.warn('Token no disponible');
+              return;
+            }
+            setToken(storedToken);
+            const storedUserData = await getUserData();
+            setUserData(storedUserData);
 
+            const response = await fetch(`${URL_API}/api/v1/posts/get-owner-posts/`, {
+              method: 'GET',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${storedToken}`,
+              },
+              body: JSON.stringify({
+                user_id: userData.id
+              })
+            });
+    
+            const data = await response.json();
+    
+            if (!response.ok) {
+              console.log('Error al obtener posts del servidor:', data);
+              return;
+            }
+    
+          const postsConCamposExtra = data.map((post) => {
+            const [day, month, year, hourStr, minute] = post.created_at.split('/');
+            const hour = parseInt(hourStr, 10);
+            const hour12 = hour % 12 === 0 ? 12 : hour % 12;
+            const ampm = hour >= 12 ? 'pm' : 'am';
+            const formattedTime = `${hour12.toString().padStart(2, '0')}:${minute}${ampm}`;
+            const formattedDate = `${day}/${month}/${year}`;
+    
+            return {
+              ...post,
+              created_date: formattedDate,
+              created_time: formattedTime,
+            };
+          });
+            setMyPost(postsConCamposExtra);
+    
+          } catch (error) {
+            console.log('Error al obtener los posts:', error);
+          }
+        };
+    
+        fetchData();
+        
+      }, []);
+    
     const measurePosition = (event: any) => {
         event.target.measure((x: number, y: number, width: number, height: number, pageX: number, pageY: number) => {
             let adjustedX = pageX;
@@ -99,7 +159,7 @@ const UserProfileWithPosts: React.FC = () => {
     };
 
     const handleEdit = (post: Post) => {
-        const diff = Date.now() - new Date(post.createdAt).getTime();
+        const diff = Date.now() - new Date(post.created_at).getTime();
         const canEdit = diff <= 24 * 60 * 60 * 1000;
 
         if (canEdit) {
@@ -122,13 +182,13 @@ const UserProfileWithPosts: React.FC = () => {
         <View style={styles.container}>
             <View style={styles.header}>
                 <Image
-                    source={require('../assets/images/profile-user.png')}
+                    source={URL_API + item.image}
                     style={styles.profileImage}
                 />
                 <View style={styles.userInfo}>
-                    <Text style={styles.username}>{item.username}</Text>
-                    <Text style={styles.handle}>{item.handle}</Text>
-                    <Text style={styles.date}>{item.date}</Text>
+                    <Text style={styles.username}>{item.author}</Text>
+                    <Text style={styles.handle}>{item.author}</Text>
+                    <Text style={styles.date}>{item.created_date + " "+ item.created_time}</Text>
                 </View>
                 <TouchableOpacity
                     onPress={(event) => {
@@ -143,7 +203,7 @@ const UserProfileWithPosts: React.FC = () => {
             <Text style={styles.content}>{item.content}</Text>
 
             {item.image ? (
-                <Image source={{ uri: item.image }} style={styles.postImage} />
+                <Image source={{ uri: URL_API + item.image }} style={styles.postImage} />
             ) : null}
 
             <View style={styles.actions}>
@@ -194,7 +254,7 @@ const UserProfileWithPosts: React.FC = () => {
 
     return (
         <FlatList
-            data={postsData}
+            data={postsConCamposExtra}
             keyExtractor={(item) => item.id}
             renderItem={renderPost}
         />

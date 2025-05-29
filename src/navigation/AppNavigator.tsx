@@ -39,7 +39,7 @@ const AppNavigator = () => {
             />
           </View>
         ),
-        headerTitleAlign: 'center', // Centrar el título (logo) en el header
+        headerTitleAlign: 'center',
       }}
     >
       <Stack.Screen
